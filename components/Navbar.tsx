@@ -1,9 +1,62 @@
-import React from 'react'
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 const Navbar = () => {
-  return (
-    <div>Navbar</div>
-  )
-}
+    const [time, setTime] = useState("");
 
-export default Navbar
+    useEffect(() => {
+        const now = new Date();
+        setTime(
+            now.toLocaleTimeString("en-US", {
+                hour12: false,
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+            })
+        );
+    }, []);
+
+    return (
+        <nav className="sticky top-0 z-50 w-full border-b border-border bg-primary backdrop-blur-md">
+            <div className="flex h-16 items-center justify-between px-4 md:px-8">
+                {/* Left Section: Logo */}
+                <div className="flex items-center">
+                    <Link href="/" className="text-2xl font-pixel font-black text-secondary tracking-wider">
+                        KOLRANKO<span className="text-accent font-fat-kat">.</span>
+                    </Link>
+                </div>
+
+                {/* Center/Right Section */}
+                <div className="flex items-center gap-6 md:gap-8">
+                    {/* Status Indicators (Hidden on small screens if needed, but keeping visible based on req) */}
+                    <div className="hidden flex-row gap-6 md:flex font-proxima-nova text-sm font-bold tracking-wider text-secondary">
+                        <div className="flex items-center gap-2">
+                            <div className="h-3 w-3 rounded-full bg-[#FF453A]"></div>
+                            <span>CRITICAL</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="h-3 w-3 rounded-full bg-[#FFD60A]"></div>
+                            <span>WARNING</span>
+                        </div>
+                    </div>
+
+                    {/* Time Display */}
+                    <div className="font-proxima-nova text-lg font-medium text-secondary tabular-nums hidden sm:block">
+                        {time}
+                    </div>
+
+                    {/* Mobile Menu Button (Hamburger) - Placeholder/Basic implementation */}
+                    <button className="md:hidden text-secondary p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    );
+};
+
+export default Navbar;
