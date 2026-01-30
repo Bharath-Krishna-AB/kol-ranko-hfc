@@ -10,10 +10,10 @@ const ActionQueue = () => {
             {/* Header Section */}
             <div className="flex flex-col gap-2 flex-shrink-0">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-pixel text-4xl uppercase tracking-wider text-accent">
+                    <h2 className="font-panchang font-extrabold text-4xl uppercase tracking-tighter text-accent">
                         Action Queue
                     </h2>
-                    <div className="rounded-full bg-accent/10 px-4 py-1.5 font-pixel text-xs font-bold text-accent">
+                    <div className="rounded-full bg-accent/10 px-4 py-1.5 font-panchang text-xs font-extrabold text-accent">
                         LIVE RISK FEED
                     </div>
                 </div>

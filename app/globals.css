@@ -1,4 +1,7 @@
+@import url("https://api.fontshare.com/v2/css?f[]=panchang@200,300,400,500,600,700,800,900&display=swap");
+
 @import "tailwindcss";
+
 
 :root {
   --primary: oklch(0.97 0 0);
@@ -6,6 +9,7 @@
   --accent: #703EFF;
   --border: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+  --font-panchang: 'Panchang', sans-serif;
 }
 
 @theme inline {
@@ -18,6 +22,7 @@
   --font-proxima-nova: var(--font-proxima-nova);
   --font-kol-ranko: var(--font-kol-ranko);
   --font-pixel: var(--font-pixel);
+  --font-panchang: var(--font-panchang);
 }
 
 body {

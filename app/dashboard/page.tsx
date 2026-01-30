@@ -1,5 +1,6 @@
 import React from 'react';
 import ActionQueue from '@/components/dashboard/ActionQueue';
+import ImpactRadarGraph from '@/components/dashboard/ImpactRadarGraph';
 
 const DashboardPage = () => {
   return (
@@ -12,13 +13,8 @@ const DashboardPage = () => {
           </section>
 
           {/* Top Right: Impact Analysis Graph */}
-          <section className="col-span-1 row-span-1">
-            <div className="rounded-2xl border border-gray-100 bg-white/40 p-8 shadow-sm backdrop-blur-md flex items-center justify-center h-full">
-              <div className="text-center">
-                <h3 className="font-fat-kat text-2xl text-gray-300 uppercase">Impact Analysis Graph</h3>
-                <p className="font-proxima-nova text-sm text-gray-400">Coming Soon</p>
-              </div>
-            </div>
+          <section className="col-span-1 row-span-1 min-h-0 overflow-hidden">
+            <ImpactRadarGraph />
           </section>
 
           {/* Bottom Left: Threat Distribution */}
