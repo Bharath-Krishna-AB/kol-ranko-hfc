@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import BackgroundGrid from "@/components/BackgroundGrid";
+import Navbar from "@/components/Navbar";
 
 const fatKat = localFont({
   src: "./fonts/FatKat.otf",
@@ -39,6 +40,7 @@ export default function RootLayout({
         className={`${fatKat.variable} ${proximaNova.variable} ${kolRanko.variable} ${pixel.variable} antialiased`}
       >
         <BackgroundGrid />
+        <Navbar />
         {children}
       </body>
     </html>
