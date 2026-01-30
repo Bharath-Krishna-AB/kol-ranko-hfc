@@ -1,6 +1,7 @@
 import React from 'react';
 import ActionQueue from '@/components/dashboard/ActionQueue';
 import ImpactRadarGraph from '@/components/dashboard/ImpactRadarGraph';
+import ThreatDistribution from '@/components/dashboard/ThreatDistribution';
 
 const DashboardPage = () => {
   return (
@@ -18,10 +19,8 @@ const DashboardPage = () => {
           </section>
 
           {/* Bottom Left: Threat Distribution */}
-          <section className="col-span-1 row-span-1">
-            <div className="rounded-2xl border border-gray-100 bg-white/40 p-6 shadow-sm backdrop-blur-md flex items-center justify-center h-full">
-              <h3 className="font-fat-kat text-xl text-gray-300 uppercase">Threat Distribution</h3>
-            </div>
+          <section className="col-span-1 row-span-1 min-h-0 overflow-hidden">
+            <ThreatDistribution />
           </section>
 
           {/* Bottom Right: Remediation Velocity */}

@@ -6,11 +6,11 @@ import VulnerabilityCard from "./VulnerabilityCard";
 
 const ActionQueue = () => {
     return (
-        <div className="flex h-full w-full min-h-0 flex-col gap-6 rounded-2xl border border-border/50 bg-white/40 p-6 shadow-sm backdrop-blur-md overflow-hidden">
+        <div className="flex h-full w-full min-h-0 flex-col gap-4 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden">
             {/* Header Section */}
-            <div className="flex flex-col gap-2 flex-shrink-0">
+            <div className="flex flex-col gap-2 shrink-0">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-space-mono font-bold text-4xl capitalise tracking-tighter text-accent">
+                    <h2 className="font-space-mono font-bold text-3xl capitalise tracking-tighter text-accent">
                         Action Queue
                     </h2>
                     <div className="rounded-full bg-accent/10 px-4 py-1.5 text-xs text-accent">
@@ -24,7 +24,7 @@ const ActionQueue = () => {
 
             {/* List Section */}
             <div className="flex-1 overflow-y-auto pr-2">
-                <div className="flex flex-col gap-4 pb-10">
+                <div className="flex flex-col gap-3 pb-6">
                     {MOCK_VULNERABILITIES.map((vuln, index) => (
                         <VulnerabilityCard key={vuln.id} vulnerability={vuln} index={index} />
                     ))}

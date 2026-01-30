@@ -30,7 +30,7 @@ const ImpactRadarGraph = () => {
     // Graph configuration
     const size = 300;
     const center = size / 2;
-    const radius = 100; // Radius of the chart itself
+    const radius = 130; // Radius of the chart itself
     const levels = 4; // Number of concentric grid lines
 
     // Helper to calculate points on the circle
@@ -59,7 +59,7 @@ const ImpactRadarGraph = () => {
     return (
         <div className="flex h-full w-full flex-col gap-6 rounded-2xl border border-border/50 bg-white/40 p-6 shadow-sm backdrop-blur-md overflow-hidden relative">
             {/* Header */}
-            <div className="flex flex-col gap-2 flex-shrink-0 z-10">
+            <div className="flex flex-col gap-2 shrink-0 z-10">
                 <div className="flex items-center justify-between">
                     <h2 className="font-space-mono font-bold text-4xl capitalise tracking-tighter text-accent">
                         Impact Analysis
@@ -129,15 +129,31 @@ const ImpactRadarGraph = () => {
 
                     {/* Labels */}
                     {DATA.map((d, i) => {
-                        const point = getPoint(125, i, DATA.length); // Push labels out a bit
+                        const point = getPoint(120, i, DATA.length); // Push labels out slightly more
+                        // Calculate standard angle to determine text anchor
+                        const angle = (Math.PI * 2 * i) / DATA.length - Math.PI / 2;
+                        const degrees = (angle * 180) / Math.PI;
+
+                        // Dynamic text anchor based on position
+                        let textAnchor: "middle" | "start" | "end" = "middle";
+                        if (Math.abs(Math.cos(angle)) > 0.1) {
+                            textAnchor = Math.cos(angle) > 0 ? "start" : "end";
+                        }
+
+                        // Dynamic baseline
+                        let dominantBaseline: "middle" | "hanging" | "auto" = "middle";
+                        if (Math.abs(Math.sin(angle)) > 0.5) {
+                            dominantBaseline = Math.sin(angle) > 0 ? "hanging" : "auto";
+                        }
+
                         return (
                             <text
                                 key={i}
                                 x={point.x}
                                 y={point.y}
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                                className="fill-gray-500 font-space-mono text-[7px] font-normal tracking-normal uppercase"
+                                textAnchor={textAnchor}
+                                dominantBaseline={dominantBaseline}
+                                className="fill-gray-500 font-space-mono text-[10px] font-bold tracking-tight uppercase"
                             >
                                 {d.label}
                             </text>
