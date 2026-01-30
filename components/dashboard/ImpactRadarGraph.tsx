@@ -61,7 +61,7 @@ const ImpactRadarGraph = () => {
             {/* Header */}
             <div className="flex flex-col gap-2 shrink-0 z-10">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-space-mono font-bold text-4xl capitalise tracking-tighter text-accent">
+                    <h2 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
                         Impact Analysis
                     </h2>
                     <div className="rounded-full bg-accent/10 px-3 py-1 text-[12px] text-accent">

@@ -35,7 +35,7 @@ const ThreatDistribution = () => {
 
             {/* Header */}
             <div className="flex flex-col gap-1 z-10">
-                <h3 className="font-space-mono text-xl font-bold tracking-tighter uppercase text-accent">
+                <h3 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
                     Threat Distribution
                 </h3>
                 <p className="font-space-mono text-[10px] text-gray-500 uppercase tracking-widest">

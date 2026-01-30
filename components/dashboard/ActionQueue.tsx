@@ -10,7 +10,7 @@ const ActionQueue = () => {
             {/* Header Section */}
             <div className="flex flex-col gap-2 shrink-0">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-space-mono font-bold text-3xl capitalise tracking-tighter text-accent">
+                    <h2 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
                         Action Queue
                     </h2>
                     <div className="rounded-full bg-accent/10 px-4 py-1.5 text-xs text-accent">
