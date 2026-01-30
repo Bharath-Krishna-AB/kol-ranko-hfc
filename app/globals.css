@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+:root {
+  --primary: oklch(0.97 0 0);
+  --secondary: oklch(0.205 0 0);
+  --accent: #703EFF;
+  --border: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --font-fat-kat: var(--font-fat-kat);
+  --font-proxima-nova: var(--font-proxima-nova);
+  --font-kol-ranko: var(--font-kol-ranko);
+  --font-pixel: var(--font-pixel);
+}
+
+body {
+  background: var(--primary);
+  color: var(--secondary);
+  font-family: Arial, Helvetica, sans-serif;
+}

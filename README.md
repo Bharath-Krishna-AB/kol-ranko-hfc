@@ -1,49 +1,36 @@
-# BeachHack Template Repository
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-![BeachHack Banner](https://github.com/user-attachments/assets/b46c3336-f9eb-473a-ba76-bcf5c0f29d0d)
+## Getting Started
 
-Official starter template repository for **BeachHack** hackathon participants.
+First, run the development server:
 
----
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## 📌 Instructions
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-All teams must **fork this repository** at the start of the hackathon and use the forked repository for all development work. Use of personal or pre-existing repositories is not allowed.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-You are **not restricted to the track or domain** you submitted your initial idea under. Teams are free to choose **any of the released problem statements**.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
----
+## Learn More
 
-## ⏱️ Important Rules
+To learn more about Next.js, take a look at the following resources:
 
-- All development must begin **after forking** this repository.
-- The problem statements were shared in advance **only for ideation and planning**.
-- **No pre-built or pre-developed solutions** are allowed in any form.
-- Commit history and repository metadata will be actively reviewed.
-- Any violation of these rules may result in **immediate disqualification**.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
----
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## 🛠️ Project Setup
+## Deploy on Vercel
 
-This repository does **not enforce any folder structure or technology stack**.  
-Teams are free to organize their project and choose tools, frameworks, and platforms as required by their solution.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
----
-
-## 📤 Submission Guidelines
-
-Your forked repository will be considered your final submission.  
-Ensure your repository includes a clear README describing:
-- Selected problem statement
-- Project overview
-- Technical approach
-- Setup instructions
-- Demo links
-- Screenshots
-
----
-
-Good luck, and happy hacking 🚀  
-**– Team BeachHack**
-
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
