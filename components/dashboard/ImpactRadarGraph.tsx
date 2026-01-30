@@ -61,10 +61,10 @@ const ImpactRadarGraph = () => {
             {/* Header */}
             <div className="flex flex-col gap-2 flex-shrink-0 z-10">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-panchang font-extrabold text-2xl uppercase tracking-tighter text-accent">
+                    <h2 className="font-space-mono font-bold text-4xl capitalise tracking-tighter text-accent">
                         Impact Analysis
                     </h2>
-                    <div className="rounded-full bg-accent/10 px-3 py-1 font-panchang text-[10px] font-extrabold text-accent">
+                    <div className="rounded-full bg-accent/10 px-3 py-1 text-[12px] text-accent">
                         BUSINESS RISK
                     </div>
                 </div>
@@ -137,7 +137,7 @@ const ImpactRadarGraph = () => {
                                 y={point.y}
                                 textAnchor="middle"
                                 dominantBaseline="middle"
-                                className="fill-gray-500 font-panchang text-[8px] font-bold tracking-widest uppercase"
+                                className="fill-gray-500 font-space-mono text-[7px] font-normal tracking-normal uppercase"
                             >
                                 {d.label}
                             </text>

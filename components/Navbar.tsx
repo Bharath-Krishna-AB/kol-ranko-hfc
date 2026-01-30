@@ -44,7 +44,7 @@ const Navbar = () => {
                 {/* Center/Right Section */}
                 <div className="flex items-center gap-6 md:gap-8">
                     {/* Status Indicators */}
-                    <div className="hidden flex-row gap-6 md:flex font-proxima-nova text-sm font-bold tracking-wider text-secondary">
+                    <div className="hidden flex-row gap-6 md:flex text-sm font-bold tracking-wider text-secondary">
                         <div className="flex items-center gap-2">
                             <div className="h-3 w-3 rounded-full bg-[#FF453A]"></div>
                             <span>{criticalCount} CRITICAL</span>
@@ -56,7 +56,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Time Display */}
-                    <div className="font-proxima-nova text-lg font-medium text-secondary tabular-nums hidden sm:block">
+                    <div className="text-lg font-medium text-secondary tabular-nums hidden sm:block">
                         {time}
                     </div>
 

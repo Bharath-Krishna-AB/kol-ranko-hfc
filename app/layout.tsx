@@ -9,11 +9,6 @@ const fatKat = localFont({
   variable: "--font-fat-kat",
 });
 
-const proximaNova = localFont({
-  src: "./fonts/ProximaNova-Regular.otf",
-  variable: "--font-proxima-nova",
-});
-
 const kolRanko = localFont({
   src: "./fonts/kol-ranko.woff2",
   variable: "--font-kol-ranko",
@@ -22,6 +17,11 @@ const kolRanko = localFont({
 const pixel = localFont({
   src: "./fonts/pixel.ttf",
   variable: "--font-pixel",
+});
+
+const spaceMono = localFont({
+  src: "./fonts/SpaceMono-Regular.ttf",
+  variable: "--font-space-mono",
 });
 
 export const metadata: Metadata = {
@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${fatKat.variable} ${proximaNova.variable} ${kolRanko.variable} ${pixel.variable} antialiased`}
+        className={`${fatKat.variable} ${kolRanko.variable} ${pixel.variable} ${spaceMono.variable} antialiased`}
       >
         <BackgroundGrid />
         <Navbar />

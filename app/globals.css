@@ -1,5 +1,3 @@
-@import url("https://api.fontshare.com/v2/css?f[]=panchang@200,300,400,500,600,700,800,900&display=swap");
-
 @import "tailwindcss";
 
 
@@ -9,7 +7,6 @@
   --accent: #703EFF;
   --border: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --font-panchang: 'Panchang', sans-serif;
 }
 
 @theme inline {
@@ -19,10 +16,10 @@
   --color-border: var(--border);
   --color-ring: var(--ring);
   --font-fat-kat: var(--font-fat-kat);
-  --font-proxima-nova: var(--font-proxima-nova);
+  --font-fat-kat: var(--font-fat-kat);
   --font-kol-ranko: var(--font-kol-ranko);
   --font-pixel: var(--font-pixel);
-  --font-panchang: var(--font-panchang);
+  --font-space-mono: var(--font-space-mono);
 }
 
 body {

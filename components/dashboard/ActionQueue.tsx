@@ -10,14 +10,14 @@ const ActionQueue = () => {
             {/* Header Section */}
             <div className="flex flex-col gap-2 flex-shrink-0">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-panchang font-extrabold text-4xl uppercase tracking-tighter text-accent">
+                    <h2 className="font-space-mono font-bold text-4xl capitalise tracking-tighter text-accent">
                         Action Queue
                     </h2>
-                    <div className="rounded-full bg-accent/10 px-4 py-1.5 font-panchang text-xs font-extrabold text-accent">
+                    <div className="rounded-full bg-accent/10 px-4 py-1.5 text-xs text-accent">
                         LIVE RISK FEED
                     </div>
                 </div>
-                <p className="font-proxima-nova text-base font-medium text-gray-500 max-w-md">
+                <p className="text-base font-medium text-gray-500 max-w-md">
                     Prioritized by contextual risk: <span className="text-black font-bold">Likelihood × Impact × Exposure</span>.
                 </p>
             </div>
