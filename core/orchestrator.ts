@@ -1,39 +1,47 @@
-import { PipelineState } from "./state";
-import { runParser } from "@/agents/parser/run";
-import { runValidator } from "@/agents/validator/run";
-import { runThreatIntel } from "@/agents/threat-intel/run";
-import { runScoring } from "@/agents/scoring/engine";
-import { runQA } from "@/agents/qa/run";
+// core/orchestrator.ts
+import { parseInput } from '../agents/parser';
+import { validateDependencies } from '../agents/validator';
+import { enrichVulnerabilities } from '../agents/enricher';
+import { analyzeVulnerabilities } from '../agents/analyzer';
+import { validateOutput } from '../agents/output-validator';
+import { prioritizeAndFormat } from '../agents/prioritizer';
+import type { FinalOutput } from '@/schemas/agent';
 
-export async function runPipeline(rawInput: string): Promise<PipelineState> {
-    const state: PipelineState = {
-        rawInput,
-        errors: []
-    };
+export async function runPipeline(unstructuredText: string, context?: string): Promise<FinalOutput> {
+    console.log('[Pipeline] Starting multi-stage analysis...');
 
-    try {
-        // 1. Parsing
-        await runParser(state);
+    // Stage 1: Parse unstructured input
+    console.log('[Pipeline] Stage 1: Parsing input...');
+    const parsed = await parseInput(unstructuredText);
 
-        if (!state.parsedDependencies || state.parsedDependencies.length === 0) {
-            state.errors?.push("No dependencies parsed. Aborting pipeline.");
-            return state;
-        }
+    // Stage 2: Validate parsed dependencies
+    console.log('[Pipeline] Stage 2: Validating dependencies...');
+    const validation = await validateDependencies(parsed);
 
-        // 2. Validation & Threat Intel (Parallel-ish capability, but keeping sequential for safety)
-        runValidator(state);
-        await runThreatIntel(state);
-
-        // 3. Scoring
-        runScoring(state);
-
-        // 4. QA Arbiter
-        await runQA(state);
-
-    } catch (error: any) {
-        console.error("🔥 Pipeline Fatal Error:", error);
-        state.errors?.push(`Fatal: ${error.message}`);
+    if (!validation.valid) {
+        throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
     }
 
-    return state;
+    // Stage 3: Enrich with vulnerability data from OSV
+    console.log('[Pipeline] Stage 3: Enriching with vulnerability data...');
+    const enriched = await enrichVulnerabilities(validation.dependencies);
+
+    // Stage 4: Analyze and score vulnerabilities (with context)
+    console.log('[Pipeline] Stage 4: Analyzing vulnerabilities...');
+    const analyzed = await analyzeVulnerabilities(enriched, context);
+
+    // Stage 5: Prioritize and format output
+    console.log('[Pipeline] Stage 5: Prioritizing and formatting...');
+    const output = await prioritizeAndFormat(analyzed);
+
+    // Stage 6: Validate final output
+    console.log('[Pipeline] Stage 6: Validating output...');
+    const outputValidation = await validateOutput(output);
+
+    if (!outputValidation.valid) {
+        console.warn('[Pipeline] Output validation warnings:', outputValidation.warnings);
+    }
+
+    console.log('[Pipeline] Complete!');
+    return output;
 }

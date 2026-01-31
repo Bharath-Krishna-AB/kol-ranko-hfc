@@ -1,144 +1,124 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getVulnerabilities } from "@/data/vulnerabilities";
 
-const ThreatDistribution = () => {
-    const vulnerabilities = getVulnerabilities();
+// --- Terminal Component ---
 
-    const data = useMemo(() => {
-        const counts = {
-            CRITICAL: 0,
-            HIGH: 0,
-            MEDIUM: 0,
-            LOW: 0
+const TerminalLog = ({ vulnerabilities }: { vulnerabilities: any[] }) => {
+    const [logs, setLogs] = useState<string[]>([]);
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        let stepIndex = 0;
+
+        const generateBackendLog = () => {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour12: false, fractionalSecondDigits: 3 });
+
+            // Random context for logs
+            const vuln = vulnerabilities[Math.floor(Math.random() * vulnerabilities.length)] || { package: "unknown", vuln_id: "CVE-2024-XXXX" };
+            const pkg = vuln.package || "lib-core";
+            const id = vuln.vuln_id || "GHSA-xxxx-yyyy";
+
+            // Simulation of the actual backend pipeline stages
+            const stages = [
+                { stage: "ORCHESTRATOR", msg: `[Pipeline] Starting multi-stage analysis for input stream...` },
+                { stage: "PARSER", msg: `[Parser] Tokenizing input payload (${Math.floor(Math.random() * 500)}ms)` },
+                { stage: "VALIDATOR", msg: `[Validator] Checking dependencies for ${pkg}...` },
+                { stage: "VALIDATOR", msg: `[Validator] Regex match confirmed for ${id}` },
+                { stage: "ENRICHER", msg: `[Enricher] Fetching metadata from OSV database for ${pkg}` },
+                { stage: "ENRICHER", msg: `[Enricher] Retrieved CVSS vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N` },
+                { stage: "ANALYZER", msg: `[Analyzer] Function: analyzeVulnerability(${id})` },
+                { stage: "ANALYZER", msg: `[Analyzer] Context: Enterprise System Prompt (4k tokens)` },
+                { stage: "ANALYZER", msg: `[Analyzer] Calculating Risk Score: Likelihood x Impact x Exposure` },
+                { stage: "ANALYZER", msg: `[Analyzer] AI reasoning complete. Confidence: ${(0.85 + Math.random() * 0.14).toFixed(4)}` },
+                { stage: "PRIORITIZER", msg: `[Prioritizer] Sorting ${vulnerabilities.length} vulnerabilities by business impact...` },
+                { stage: "OUTPUT", msg: `[Pipeline] Validating final JSON schema compliance...` }
+            ];
+
+            // Pick a message based on a cycling step index to simulate linear progress
+            // Modulo length ensures it loops forever
+            const currentStage = stages[stepIndex % stages.length];
+
+            const newLog = `[${time}] ${currentStage.msg}`;
+
+            setLogs(prev => [...prev.slice(-18), newLog]);
+
+            stepIndex++;
+
+            // Vary speed based on "stage" complexity
+            // Analyzer steps take longer, simple steps are fast
+            const delay = currentStage.stage === "ANALYZER" ? Math.random() * 800 + 400 : Math.random() * 300 + 100;
+            setTimeout(generateBackendLog, delay);
         };
 
-        vulnerabilities.forEach(v => {
-            const sev = v.severity?.toUpperCase() ?? "LOW";
-            if (sev === "CRITICAL") counts.CRITICAL++;
-            else if (sev === "HIGH") counts.HIGH++;
-            else if (sev === "MEDIUM") counts.MEDIUM++;
-            else counts.LOW++;
-        });
-
-        const total = vulnerabilities.length || 1; // avoid divide by zero for percentages
-        // We will display percentages
-        return [
-            { label: "CRITICAL", value: Math.round((counts.CRITICAL / total) * 100), color: "#ef4444", delta: "+0%", deltaType: "neutral" },
-            { label: "HIGH", value: Math.round((counts.HIGH / total) * 100), color: "#f97316", delta: "+0%", deltaType: "neutral" },
-            { label: "MEDIUM", value: Math.round((counts.MEDIUM / total) * 100), color: "#eab308", delta: "-0%", deltaType: "neutral" },
-            // { label: "LOW", value: ... } // Donut usually shows top risks, but let's stick to 3 segments if that was the design, or add Low
-        ].filter(d => d.value > 0);
+        const timeout = setTimeout(generateBackendLog, 500);
+        return () => clearTimeout(timeout);
     }, [vulnerabilities]);
 
-    // Fill defaults if empty
-    const derivedData = data.length > 0 ? data : [
-        { label: "NO DATA", value: 100, color: "#cbd5e1", delta: "0%", deltaType: "neutral" }
-    ];
-
-    // Calculate total for donut segments (should be ~100)
-    const totalPercentage = derivedData.reduce((acc, curr) => acc + curr.value, 0);
-
-    // Calculate stroke dashes
-    let accumulatedValue = 0;
-    const size = 200;
-    const strokeWidth = 25; // Thicker donut
-    const radius = (size - strokeWidth) / 2;
-    const circumference = 2 * Math.PI * radius;
-
-    const segments = derivedData.map((item) => {
-        const strokeDasharray = `${(item.value / totalPercentage) * circumference} ${circumference}`;
-        const strokeDashoffset = -((accumulatedValue / totalPercentage) * circumference);
-        accumulatedValue += item.value;
-        return {
-            ...item,
-            strokeDasharray,
-            strokeDashoffset,
-        };
-    });
+    useEffect(() => {
+        if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }, [logs]);
 
     return (
-        <div className="flex h-full w-full flex-col gap-6 rounded-2xl border border-border/50 bg-white/40 p-6 shadow-sm backdrop-blur-md overflow-hidden relative group">
+        <div className="flex flex-col h-full w-full bg-[#1e293b] rounded-lg border border-white/5 p-4 font-space-mono text-xs overflow-hidden relative">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-3 border-b border-white/10 pb-2 z-10">
+                <span className="text-accent font-bold tracking-wider">SENTINEL_CORE_V9</span>
+                <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                    <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse delay-75"></div>
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse delay-150"></div>
+                </div>
+            </div>
+
+            {/* Logs: Explicit text-white for visibility */}
+            <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-2 z-10 scrollbar-hide">
+                {logs.map((log, i) => (
+                    <div key={i} className="text-white/90 border-l-2 border-transparent hover:border-accent pl-2 transition-all break-words font-medium leading-relaxed">
+                        <span className="text-accent mr-3">{">"}</span>
+                        {log}
+                    </div>
+                ))}
+                <div className="animate-pulse text-accent font-bold pl-2">_</div>
+            </div>
+        </div>
+    );
+};
+
+
+const ThreatDistribution = () => {
+    const rawVulnerabilities = getVulnerabilities();
+
+    return (
+        <div className="flex h-full w-full flex-col gap-4 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden">
 
             {/* Header */}
-            <div className="flex flex-col gap-1 z-10">
-                <h3 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
-                    Threat Distribution
-                </h3>
-                <p className="font-space-mono text-[10px] text-gray-500 uppercase tracking-widest">
-                    Live Risk Composition
+            <div className="flex flex-col gap-2 shrink-0 z-10">
+                <div className="flex items-center justify-between">
+                    <h2 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
+                        Sentinel Terminal
+                    </h2>
+                    <div className="rounded-full bg-accent/10 px-4 py-1.5 text-xs text-accent">
+                        LIVE MONITORING
+                    </div>
+                </div>
+                <p className="text-base font-medium text-gray-500 max-w-md">
+                    Real-time system integrity and threat feed.
                 </p>
             </div>
 
-            <div className="flex flex-1 items-center justify-between gap-6 overflow-hidden">
+            {/* Inner "Device" Window - Dark Theme (bg-secondary) */}
+            <div className="flex flex-1 items-stretch justify-center overflow-hidden relative rounded-xl bg-secondary border border-border/10 shadow-inner p-2 group">
+                {/* Visual Artifacts / Background for Terminal */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[20px_20px] pointer-events-none opacity-20"></div>
 
-                {/* Donut Chart */}
-                <div className="relative flex items-center justify-center h-full aspect-square shrink-0">
-                    <svg
-                        width="100%"
-                        height="100%"
-                        viewBox={`0 0 ${size} ${size}`}
-                        className="transform -rotate-90 overflow-visible"
-                    >
-                        {segments.map((segment, index) => (
-                            <circle
-                                key={segment.label}
-                                cx={size / 2}
-                                cy={size / 2}
-                                r={radius}
-                                fill="none"
-                                stroke={segment.color}
-                                strokeWidth={strokeWidth}
-                                strokeDasharray={segment.strokeDasharray}
-                                strokeDashoffset={segment.strokeDashoffset}
-                                strokeLinecap="round" // Rounded ends for style
-                                className="transition-all duration-1000 ease-out opacity-90 hover:opacity-100 hover:stroke-[30px]" // Hover effect
-                            />
-                        ))}
-                    </svg>
-                    {/* Inner Text or Icon */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="font-space-mono text-xs text-gray-400 font-bold">TOTAL</span>
-                        <span className="font-space-mono text-2xl font-bold text-gray-700">{vulnerabilities.length}</span>
-                    </div>
-                </div>
-
-                {/* Legend & Deltas */}
-                <div className="flex flex-col justify-center gap-4 flex-1">
-                    {derivedData.map((item) => (
-                        <div key={item.label} className="flex flex-col gap-1">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div
-                                        className="h-2 w-2 rounded-full"
-                                        style={{ backgroundColor: item.color }}
-                                    />
-                                    <span className="font-space-mono text-xs font-bold text-gray-600">
-                                        {item.label}
-                                    </span>
-                                </div>
-                                <span className="font-space-mono text-lg font-bold text-gray-800">
-                                    {item.value}%
-                                </span>
-                            </div>
-
-                            {/* Delta */}
-                            <div className="flex items-center gap-2 pl-4">
-                                <span className={`font-space-mono text-[10px] font-bold ${item.deltaType === 'increase' ? 'text-red-500' : 'text-emerald-600'}`}>
-                                    {item.deltaType === 'increase' ? '↑' : (item.deltaType === 'decrease' ? '↓' : '•')} {item.delta}
-                                </span>
-                                <span className="font-space-mono text-[9px] text-gray-400 capitalize">
-                                    since yesterday
-                                </span>
-                            </div>
-                        </div>
-                    ))}
+                {/* SENTINEL TERMINAL - Full Width */}
+                <div className="w-full h-full relative z-10">
+                    <TerminalLog vulnerabilities={rawVulnerabilities} />
                 </div>
             </div>
-
-            {/* Decorative Background Glow */}
-            <div className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-accent/5 blur-3xl pointer-events-none"></div>
         </div>
     );
 };

@@ -1,27 +1,37 @@
-import { NextResponse } from "next/server";
-import { runPipeline } from "@/core/orchestrator";
+// app/api/analyze/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { runPipeline } from '../../../core/orchestrator';
 
-export const maxDuration = 60; // Allow longer timeouts for agent chains
-
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
-        const { rawDependabotOutput } = await req.json();
+        const body = await req.json();
+        const { text, context } = body;
 
-        if (!rawDependabotOutput) {
+        if (!text || typeof text !== 'string') {
             return NextResponse.json(
-                { error: "Missing 'rawDependabotOutput' in body" },
+                { error: 'Missing or invalid "text" field in request body' },
                 { status: 400 }
             );
         }
 
-        const state = await runPipeline(rawDependabotOutput);
+        // Context is optional
+        if (context !== undefined && typeof context !== 'string') {
+            return NextResponse.json(
+                { error: 'Invalid "context" field - must be a string' },
+                { status: 400 }
+            );
+        }
 
-        return NextResponse.json(state);
+        const result = await runPipeline(text, context);
 
+        return NextResponse.json(result, { status: 200 });
     } catch (error: any) {
-        console.error("API Error:", error);
+        console.error('Pipeline error:', error);
         return NextResponse.json(
-            { error: "Internal Server Error", details: error.message },
+            {
+                error: 'Pipeline execution failed',
+                message: error.message
+            },
             { status: 500 }
         );
     }
