@@ -10,23 +10,23 @@
         "status_tags": [
           "ACTIVELY-EXPLOITED"
         ],
-        "worst_case_scenario": "An advanced threat actor could exploit this Prototype Pollution to manipulate application behavior, leading to unauthorized access, potentially causing significant data breaches and $1-3M in losses.",
+        "worst_case_scenario": "A malicious actor could exploit this Prototype Pollution to manipulate application behavior, leading to unauthorized access, potentially causing significant data breaches and $1-3M in losses.",
         "executive_verdict": {
           "risk_concentration": "Top 1 vulnerabilities represent 15% of total risk",
           "exposure_reduction": "Fixing this reduces attack surface by 10%",
-          "business_priority": "This vulnerability could lead to severe data breaches affecting customer trust and regulatory compliance."
+          "business_priority": "This vulnerability poses a direct risk to application integrity and customer trust."
         },
         "impact_analysis": {
           "financial": 80,
           "reputation": 90,
           "operational": 70,
-          "legal": 85,
-          "compliance": 90
+          "legal": 60,
+          "compliance": 70
         },
         "fix_recommendation": {
           "action": "URGENT",
           "est_time": "1-2 days",
-          "mitigation": "Implement input validation and sanitization controls."
+          "mitigation": "Implement input validation and sanitization."
         },
         "technical_details": {
           "cvss_vector": "7.8",
@@ -41,7 +41,7 @@
           "likelihood": 0.7,
           "impact": 0.78,
           "exposure": 0.8,
-          "formula_used": "(1.0 * 0.5 * 0.7 * 1.0 * 0.00706) * 10"
+          "formula_used": "Risk_Score = (Likelihood \u00d7 Impact \u00d7 Exposure) \u00d7 10"
         }
       },
       {
@@ -52,22 +52,22 @@
         "status_tags": [
           "ACTIVELY-EXPLOITED"
         ],
-        "worst_case_scenario": "A malicious actor could exploit this DoS vulnerability to exhaust server memory, leading to service downtime, potentially causing a 24-hour outage and $500K in losses.",
+        "worst_case_scenario": "An attacker could exploit this DoS vulnerability to exhaust server memory, leading to service downtime, potentially causing a 24-hour outage and $500K in losses.",
         "executive_verdict": {
           "risk_concentration": "Top 2 vulnerabilities represent 30% of total risk",
           "exposure_reduction": "Fixing this reduces attack surface by 15%",
-          "business_priority": "This vulnerability poses a risk to service availability, impacting customer satisfaction and revenue."
+          "business_priority": "This vulnerability can severely impact service availability and customer satisfaction."
         },
         "impact_analysis": {
           "financial": 70,
           "reputation": 80,
           "operational": 90,
           "legal": 50,
-          "compliance": 70
+          "compliance": 60
         },
         "fix_recommendation": {
           "action": "URGENT",
-          "est_time": "1-2 days",
+          "est_time": "2-4 hours",
           "mitigation": "Implement rate limiting and input validation."
         },
         "technical_details": {
@@ -80,10 +80,10 @@
           "patch_available": false
         },
         "calculation_breakdown": {
-          "likelihood": 0.7,
+          "likelihood": 0.6,
           "impact": 0.75,
           "exposure": 0.8,
-          "formula_used": "(1.0 * 0.5 * 0.7 * 1.0 * 0.00163) * 10"
+          "formula_used": "Risk_Score = (Likelihood \u00d7 Impact \u00d7 Exposure) \u00d7 10"
         }
       },
       {
@@ -98,19 +98,19 @@
         "executive_verdict": {
           "risk_concentration": "Top 3 vulnerabilities represent 45% of total risk",
           "exposure_reduction": "Fixing this reduces attack surface by 12%",
-          "business_priority": "This vulnerability can severely impact application performance and user experience."
+          "business_priority": "This vulnerability threatens application performance and user experience."
         },
         "impact_analysis": {
           "financial": 60,
           "reputation": 70,
           "operational": 80,
           "legal": 40,
-          "compliance": 60
+          "compliance": 50
         },
         "fix_recommendation": {
           "action": "URGENT",
           "est_time": "1-2 days",
-          "mitigation": "Implement input validation and monitoring for unusual patterns."
+          "mitigation": "Implement input validation and monitoring."
         },
         "technical_details": {
           "cvss_vector": "7.5",
@@ -122,10 +122,10 @@
           "patch_available": false
         },
         "calculation_breakdown": {
-          "likelihood": 0.7,
+          "likelihood": 0.6,
           "impact": 0.75,
           "exposure": 0.8,
-          "formula_used": "(1.0 * 0.5 * 0.7 * 1.0 * 0.00464) * 10"
+          "formula_used": "Risk_Score = (Likelihood \u00d7 Impact \u00d7 Exposure) \u00d7 10"
         }
       },
       {
@@ -140,19 +140,19 @@
         "executive_verdict": {
           "risk_concentration": "Top 4 vulnerabilities represent 60% of total risk",
           "exposure_reduction": "Fixing this reduces attack surface by 20%",
-          "business_priority": "This vulnerability threatens the availability of critical .NET applications."
+          "business_priority": "This vulnerability can disrupt critical business operations."
         },
         "impact_analysis": {
           "financial": 80,
           "reputation": 70,
           "operational": 90,
-          "legal": 60,
-          "compliance": 80
+          "legal": 50,
+          "compliance": 60
         },
         "fix_recommendation": {
           "action": "URGENT",
           "est_time": "1-2 days",
-          "mitigation": "Implement application monitoring and resource limits."2
+          "mitigation": "Implement application monitoring and rate limiting."
         },
         "technical_details": {
           "cvss_vector": "7.3",
@@ -165,10 +165,10 @@
           "patch_available": false
         },
         "calculation_breakdown": {
-          "likelihood": 0.7,
+          "likelihood": 0.6,
           "impact": 0.73,
           "exposure": 0.8,
-          "formula_used": "(1.0 * 0.5 * 0.7 * 1.0 * 0.0003) * 10"
+          "formula_used": "Risk_Score = (Likelihood \u00d7 Impact \u00d7 Exposure) \u00d7 10"
         }
       },
       {
@@ -179,23 +179,23 @@
         "status_tags": [
           "ACTIVELY-EXPLOITED"
         ],
-        "worst_case_scenario": "An attacker could exploit this Prototype Pollution to manipulate application data, leading to unauthorized data access, potentially causing significant data integrity issues and $500K in losses.",
+        "worst_case_scenario": "An attacker could exploit this Prototype Pollution to manipulate application data, leading to unauthorized data access, potentially causing significant data breaches and $500K in losses.",
         "executive_verdict": {
           "risk_concentration": "Top 5 vulnerabilities represent 70% of total risk",
           "exposure_reduction": "Fixing this reduces attack surface by 8%",
-          "business_priority": "This vulnerability can lead to unauthorized data manipulation affecting business operations."
+          "business_priority": "This vulnerability can compromise application integrity."
         },
         "impact_analysis": {
-          "financial": 60,
-          "reputation": 70,
-          "operational": 60,
-          "legal": 50,
-          "compliance": 70
+          "financial": 70,
+          "reputation": 60,
+          "operational": 50,
+          "legal": 40,
+          "compliance": 50
         },
         "fix_recommendation": {
           "action": "SCHEDULED",
-          "est_time": "2-4 hours",
-          "mitigation": "Implement input validation and sanitization controls."
+          "est_time": "Next maintenance window",
+          "mitigation": "Implement input validation and sanitization."
         },
         "technical_details": {
           "cvss_vector": "6.5",
@@ -207,10 +207,10 @@
           "patch_available": false
         },
         "calculation_breakdown": {
-          "likelihood": 0.6,
+          "likelihood": 0.5,
           "impact": 0.65,
           "exposure": 0.8,
-          "formula_used": "(1.0 * 0.5 * 0.6 * 1.0 * 0.0006) * 10"
+          "formula_used": "Risk_Score = (Likelihood \u00d7 Impact \u00d7 Exposure) \u00d7 10"
         }
       },
       {
@@ -221,22 +221,22 @@
         "status_tags": [
           "PRODUCTION"
         ],
-        "worst_case_scenario": "An attacker could exploit this vulnerability to gain unauthorized access to the filesystem, leading to potential data breaches, potentially causing $200K in losses.",
+        "worst_case_scenario": "An attacker could exploit this vulnerability to manipulate file extraction, leading to unauthorized file access, potentially causing data leaks and $200K in losses.",
         "executive_verdict": {
           "risk_concentration": "Top 6 vulnerabilities represent 75% of total risk",
           "exposure_reduction": "Fixing this reduces attack surface by 5%",
-          "business_priority": "This vulnerability poses a risk to sensitive data exposure."
+          "business_priority": "This vulnerability can lead to unauthorized access to sensitive data."
         },
         "impact_analysis": {
-          "financial": 40,
-          "reputation": 50,
+          "financial": 50,
+          "reputation": 40,
           "operational": 30,
-          "legal": 40,
-          "compliance": 50
+          "legal": 20,
+          "compliance": 30
         },
         "fix_recommendation": {
           "action": "SCHEDULED",
-          "est_time": "2-4 hours",
+          "est_time": "Next maintenance window",
           "mitigation": "Implement access controls and monitoring."
         },
         "technical_details": {
@@ -244,7 +244,7 @@
           "affected_components": [
             "pip"
           ],
-          "attack_vector": "Local",
+          "attack_vector": "Network",
           "exploit_available": false,
           "patch_available": false
         },
@@ -252,7 +252,7 @@
           "likelihood": 0.4,
           "impact": 0.4,
           "exposure": 0.8,
-          "formula_used": "(0.4 * 0.4 * 0.8) * 10"
+          "formula_used": "Risk_Score = (Likelihood \u00d7 Impact \u00d7 Exposure) \u00d7 10"
         }
       },
       {
@@ -263,30 +263,30 @@
         "status_tags": [
           "PRODUCTION"
         ],
-        "worst_case_scenario": "An attacker could exploit this vulnerability to cause performance degradation, leading to slow application response times, potentially causing $100K in losses.",
+        "worst_case_scenario": "An attacker could exploit this ReDoS vulnerability to degrade application performance, leading to service unavailability, potentially causing a 6-hour outage and $100K in losses.",
         "executive_verdict": {
           "risk_concentration": "Top 7 vulnerabilities represent 80% of total risk",
           "exposure_reduction": "Fixing this reduces attack surface by 3%",
-          "business_priority": "This vulnerability can affect application performance and user experience."
+          "business_priority": "This vulnerability can impact application performance."
         },
         "impact_analysis": {
-          "financial": 20,
-          "reputation": 30,
-          "operational": 20,
+          "financial": 30,
+          "reputation": 20,
+          "operational": 40,
           "legal": 10,
           "compliance": 20
         },
         "fix_recommendation": {
           "action": "MONITOR",
           "est_time": "Next maintenance window",
-          "mitigation": "Implement performance monitoring."
+          "mitigation": "Implement monitoring and logging."
         },
         "technical_details": {
           "cvss_vector": "0.0",
           "affected_components": [
             "es5-ext"
           ],
-          "attack_vector": "Local",
+          "attack_vector": "Network",
           "exploit_available": false,
           "patch_available": false
         },
@@ -294,7 +294,7 @@
           "likelihood": 0.3,
           "impact": 0.3,
           "exposure": 0.8,
-          "formula_used": "(0.3 * 0.3 * 0.8) * 10"
+          "formula_used": "Risk_Score = (Likelihood \u00d7 Impact \u00d7 Exposure) \u00d7 10"
         }
       },
       {
@@ -305,16 +305,16 @@
         "status_tags": [
           "PRODUCTION"
         ],
-        "worst_case_scenario": "An attacker could exploit this vulnerability to cause application crashes, leading to service interruptions, potentially causing $50K in losses.",
+        "worst_case_scenario": "An attacker could exploit this DoS vulnerability to crash the XML parser, leading to service interruptions, potentially causing a 4-hour outage and $50K in losses.",
         "executive_verdict": {
           "risk_concentration": "Top 8 vulnerabilities represent 85% of total risk",
           "exposure_reduction": "Fixing this reduces attack surface by 2%",
-          "business_priority": "This vulnerability can lead to service disruptions affecting user experience."
+          "business_priority": "This vulnerability can disrupt service availability."
         },
         "impact_analysis": {
-          "financial": 10,
-          "reputation": 20,
-          "operational": 10,
+          "financial": 20,
+          "reputation": 10,
+          "operational": 30,
           "legal": 5,
           "compliance": 10
         },
@@ -328,7 +328,7 @@
           "affected_components": [
             "rexml"
           ],
-          "attack_vector": "Local",
+          "attack_vector": "Network",
           "exploit_available": false,
           "patch_available": false
         },
@@ -336,17 +336,17 @@
           "likelihood": 0.2,
           "impact": 0.2,
           "exposure": 0.8,
-          "formula_used": "(0.2 * 0.2 * 0.8) * 10"
+          "formula_used": "Risk_Score = (Likelihood \u00d7 Impact \u00d7 Exposure) \u00d7 10"
         }
       }
     ],
     "total_count": 8,
-    "analyzed_at": "2026-01-31T05:28:11.868Z"
+    "analyzed_at": "2026-01-31T07:06:20.932Z"
   },
   "metadata": {
     "model": "gpt-4o-mini",
-    "tokens_used": 8402,
+    "tokens_used": 8309,
     "prompt_tokens": 5306,
-    "completion_tokens": 3096
+    "completion_tokens": 3003
   }
 }
