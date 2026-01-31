@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 const Navbar = () => {
     const container = useRef(null);
+    const pathname = usePathname();
     const [time, setTime] = useState("");
 
     // Static numbers for Critical and Warning (to be made dynamic later)
@@ -85,32 +87,34 @@ const Navbar = () => {
                 </div>
 
                 {/* Center/Right Section */}
-                <div className="flex items-center gap-6 md:gap-8">
-                    {/* Status Indicators */}
-                    <div className="hidden flex-row gap-6 md:flex text-sm font-bold tracking-wider text-secondary">
-                        <div className="nav-item flex items-center gap-2 cursor-default">
-                            <div className="status-dot-critical h-3 w-3 rounded-full bg-[#FF453A]"></div>
-                            <span>{criticalCount} CRITICAL</span>
+                {pathname !== "/signin" && (
+                    <div className="flex items-center gap-6 md:gap-8">
+                        {/* Status Indicators */}
+                        <div className="hidden flex-row gap-6 md:flex text-sm font-bold tracking-wider text-secondary">
+                            <div className="nav-item flex items-center gap-2 cursor-default">
+                                <div className="status-dot-critical h-3 w-3 rounded-full bg-[#FF453A]"></div>
+                                <span>{criticalCount} CRITICAL</span>
+                            </div>
+                            <div className="nav-item flex items-center gap-2 cursor-default">
+                                <div className="status-dot-warning h-3 w-3 rounded-full bg-[#FFD60A]"></div>
+                                <span>{warningCount} WARNING</span>
+                            </div>
                         </div>
-                        <div className="nav-item flex items-center gap-2 cursor-default">
-                            <div className="status-dot-warning h-3 w-3 rounded-full bg-[#FFD60A]"></div>
-                            <span>{warningCount} WARNING</span>
+
+                        {/* Time Display */}
+                        <div className="nav-item flex items-center gap-2 text-lg font-medium text-secondary tabular-nums">
+                            <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">TIMESTAMP</span>
+                            {time}
                         </div>
-                    </div>
 
-                    {/* Time Display */}
-                    <div className="nav-item flex items-center gap-2 text-lg font-medium text-secondary tabular-nums">
-                        <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">TIMESTAMP</span>
-                        {time}
+                        {/* Mobile Menu Button (Hamburger) */}
+                        <button className="nav-item md:hidden text-secondary p-2 hover:bg-secondary/10 rounded-lg transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                        </button>
                     </div>
-
-                    {/* Mobile Menu Button (Hamburger) */}
-                    <button className="nav-item md:hidden text-secondary p-2 hover:bg-secondary/10 rounded-lg transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                        </svg>
-                    </button>
-                </div>
+                )}
             </div>
         </nav>
     );

@@ -6,9 +6,11 @@ import OtpInput from "@/components/auth/OtpInput";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useRouter } from "next/navigation";
 
 const SignInPage = () => {
     const container = React.useRef(null);
+    const router = useRouter();
 
     useGSAP(() => {
         gsap.from(".form-item", {
@@ -20,12 +22,19 @@ const SignInPage = () => {
         });
     }, { scope: container });
 
+    const handleSignIn = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Here you would normally validate the OTP
+        console.log("Navigating to dashboard...");
+        router.push("/dashboard");
+    };
+
     return (
         <AuthLayout
             title="Identity Verification"
             subtitle="Enter credentials to access restricted networks."
         >
-            <form ref={container} className="flex flex-col gap-6 px-1">
+            <form ref={container} onSubmit={handleSignIn} className="flex flex-col gap-6 px-1">
 
                 {/* OTP Pass Key */}
                 <div className="form-item">
@@ -54,6 +63,7 @@ const SignInPage = () => {
                 {/* Authenticate Button */}
                 <button
                     type="submit"
+                    onClick={handleSignIn}
                     className="group relative w-full overflow-hidden rounded-xl bg-accent px-4 py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg shadow-accent/25 transition-all hover:bg-accent/90 hover:shadow-accent/40 hover:scale-[1.02] active:scale-[0.98]"
                 >
                     <span className="relative z-10 flex items-center justify-center gap-3">
