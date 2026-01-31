@@ -1,16 +1,44 @@
 "use client";
 
-import React from "react";
-
-const DATA = [
-    { label: "CRITICAL", value: 34, color: "#ef4444", delta: "+12%", deltaType: "increase" }, // red-500
-    { label: "HIGH", value: 41, color: "#f97316", delta: "-6%", deltaType: "decrease" },     // orange-500
-    { label: "MEDIUM", value: 25, color: "#eab308", delta: "-6%", deltaType: "decrease" },   // yellow-500
-];
+import React, { useMemo } from "react";
+import { getVulnerabilities } from "@/data/vulnerabilities";
 
 const ThreatDistribution = () => {
-    // Calculate total for donut segments
-    const total = DATA.reduce((acc, curr) => acc + curr.value, 0);
+    const vulnerabilities = getVulnerabilities();
+
+    const data = useMemo(() => {
+        const counts = {
+            CRITICAL: 0,
+            HIGH: 0,
+            MEDIUM: 0,
+            LOW: 0
+        };
+
+        vulnerabilities.forEach(v => {
+            const sev = v.severity?.toUpperCase() ?? "LOW";
+            if (sev === "CRITICAL") counts.CRITICAL++;
+            else if (sev === "HIGH") counts.HIGH++;
+            else if (sev === "MEDIUM") counts.MEDIUM++;
+            else counts.LOW++;
+        });
+
+        const total = vulnerabilities.length || 1; // avoid divide by zero for percentages
+        // We will display percentages
+        return [
+            { label: "CRITICAL", value: Math.round((counts.CRITICAL / total) * 100), color: "#ef4444", delta: "+0%", deltaType: "neutral" },
+            { label: "HIGH", value: Math.round((counts.HIGH / total) * 100), color: "#f97316", delta: "+0%", deltaType: "neutral" },
+            { label: "MEDIUM", value: Math.round((counts.MEDIUM / total) * 100), color: "#eab308", delta: "-0%", deltaType: "neutral" },
+            // { label: "LOW", value: ... } // Donut usually shows top risks, but let's stick to 3 segments if that was the design, or add Low
+        ].filter(d => d.value > 0);
+    }, [vulnerabilities]);
+
+    // Fill defaults if empty
+    const derivedData = data.length > 0 ? data : [
+        { label: "NO DATA", value: 100, color: "#cbd5e1", delta: "0%", deltaType: "neutral" }
+    ];
+
+    // Calculate total for donut segments (should be ~100)
+    const totalPercentage = derivedData.reduce((acc, curr) => acc + curr.value, 0);
 
     // Calculate stroke dashes
     let accumulatedValue = 0;
@@ -19,9 +47,9 @@ const ThreatDistribution = () => {
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
 
-    const segments = DATA.map((item) => {
-        const strokeDasharray = `${(item.value / total) * circumference} ${circumference}`;
-        const strokeDashoffset = -((accumulatedValue / total) * circumference);
+    const segments = derivedData.map((item) => {
+        const strokeDasharray = `${(item.value / totalPercentage) * circumference} ${circumference}`;
+        const strokeDashoffset = -((accumulatedValue / totalPercentage) * circumference);
         accumulatedValue += item.value;
         return {
             ...item,
@@ -72,13 +100,13 @@ const ThreatDistribution = () => {
                     {/* Inner Text or Icon */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                         <span className="font-space-mono text-xs text-gray-400 font-bold">TOTAL</span>
-                        <span className="font-space-mono text-2xl font-bold text-gray-700">1.2k</span>
+                        <span className="font-space-mono text-2xl font-bold text-gray-700">{vulnerabilities.length}</span>
                     </div>
                 </div>
 
                 {/* Legend & Deltas */}
                 <div className="flex flex-col justify-center gap-4 flex-1">
-                    {DATA.map((item) => (
+                    {derivedData.map((item) => (
                         <div key={item.label} className="flex flex-col gap-1">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
@@ -98,7 +126,7 @@ const ThreatDistribution = () => {
                             {/* Delta */}
                             <div className="flex items-center gap-2 pl-4">
                                 <span className={`font-space-mono text-[10px] font-bold ${item.deltaType === 'increase' ? 'text-red-500' : 'text-emerald-600'}`}>
-                                    {item.deltaType === 'increase' ? '↑' : '↓'} {item.delta}
+                                    {item.deltaType === 'increase' ? '↑' : (item.deltaType === 'decrease' ? '↓' : '•')} {item.delta}
                                 </span>
                                 <span className="font-space-mono text-[9px] text-gray-400 capitalize">
                                     since yesterday

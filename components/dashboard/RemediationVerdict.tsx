@@ -1,8 +1,33 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
+import { getVulnerabilities } from "@/data/vulnerabilities";
 
 const RemediationVerdict = () => {
+    const vulnerabilities = getVulnerabilities();
+
+    const stats = useMemo(() => {
+        const sorted = [...vulnerabilities].sort((a, b) => (b.current_score || 0) - (a.current_score || 0));
+        const totalScore = sorted.reduce((sum, v) => sum + (v.current_score || 0), 0);
+
+        // Stats for top 3
+        const top3 = sorted.slice(0, 3);
+        const top3Score = top3.reduce((sum, v) => sum + (v.current_score || 0), 0);
+        const riskPercent = totalScore > 0 ? Math.round((top3Score / totalScore) * 100) : 0;
+
+        // Stats for top 2 fix
+        const top2 = sorted.slice(0, 2);
+        const top2Score = top2.reduce((sum, v) => sum + (v.current_score || 0), 0);
+        const reductionPercent = totalScore > 0 ? Math.round((top2Score / totalScore) * 100) : 0;
+
+        return {
+            count: top3.length,
+            riskPercent,
+            fixCount: top2.length,
+            reductionPercent
+        };
+    }, [vulnerabilities]);
+
     return (
         <div className="flex h-full w-full flex-col justify-center rounded-2xl border border-border/50 bg-white/40 p-8 shadow-sm backdrop-blur-md relative overflow-hidden group">
 
@@ -19,11 +44,11 @@ const RemediationVerdict = () => {
             {/* The Verdict Sentence */}
             <div className="relative z-10 max-w-lg">
                 <p className="font-space-mono text-xl md:text-2xl leading-relaxed text-secondary font-medium">
-                    <span className="text-secondary font-bold">3 vulnerabilities</span> account for{" "}
-                    <span className="text-secondary font-bold">68%</span> of breach risk.
+                    <span className="text-secondary font-bold">{stats.count || 0} vulnerabilities</span> account for{" "}
+                    <span className="text-secondary font-bold">{stats.riskPercent}%</span> of breach risk.
                     <br className="mb-2 block" />
-                    Fixing <span className="text-accent font-bold">2</span> reduces exposure by{" "}
-                    <span className="text-accent font-bold">41%</span>.
+                    Fixing <span className="text-accent font-bold">{stats.fixCount}</span> reduces exposure by{" "}
+                    <span className="text-accent font-bold">{stats.reductionPercent}%</span>.
                 </p>
             </div>
 
