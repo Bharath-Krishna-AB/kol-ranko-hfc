@@ -22,9 +22,9 @@ const ActionQueue = () => {
     }, { scope: container });
 
     return (
-        <div ref={container} className="flex h-full w-full min-h-0 flex-col gap-4 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden">
+        <div ref={container} className="flex max-h-screen flex-col gap-2 rounded-2xl border border-border/50 bg-white/40 p-4 shadow-sm backdrop-blur-md overflow-hidden">
             {/* Header Section */}
-            <div className="flex flex-col gap-2 shrink-0">
+            <div className="flex flex-col gap-1 shrink-0">
                 <div className="flex items-center justify-between">
                     <h2 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
                         Action Queue
@@ -40,7 +40,7 @@ const ActionQueue = () => {
 
             {/* List Section */}
             <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent/20 hover:scrollbar-thumb-accent/40">
-                <div className="flex flex-col gap-3 pb-6">
+                <div className="flex flex-col gap-2 pb-2">
                     {vulnerabilities.map((vuln, index) => (
                         <div key={vuln.vulnerability_id} className="action-card">
                             <VulnerabilityCard vulnerability={vuln} index={index} />

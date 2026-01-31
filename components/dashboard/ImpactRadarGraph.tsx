@@ -107,21 +107,21 @@ const ImpactRadarGraph = () => {
     const dataPolygon = dataPoints.map((p) => `${p.x},${p.y}`).join(" ");
 
     return (
-        <div ref={container} className="flex h-full w-full flex-col gap-6 rounded-2xl border border-border/50 bg-white/40 p-6 shadow-sm backdrop-blur-md overflow-hidden relative">
+        <div ref={container} className="flex h-full w-full flex-col gap-2 rounded-2xl border border-border/50 bg-white/40 p-2 shadow-sm backdrop-blur-md overflow-hidden relative">
             {/* Header */}
-            <div className="flex flex-col gap-2 shrink-0 z-10">
+            <div className="flex flex-col gap-1 shrink-0 z-10 px-2 pt-2">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
+                    <h2 className="font-space-mono font-bold text-xl uppercase tracking-tighter text-accent">
                         Impact Analysis
                     </h2>
-                    <div className="rounded-full bg-accent/10 px-3 py-1 text-[12px] text-accent">
+                    <div className="rounded-full bg-accent/10 px-3 py-1 text-[10px] text-accent">
                         BUSINESS RISK
                     </div>
                 </div>
             </div>
 
             {/* Chart Container */}
-            <div className="flex-1 flex items-center justify-center relative min-h-0">
+            <div className="flex-1 flex items-center justify-center relative min-h-0 w-full">
                 <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
                     {/* Background Grid Circles/Polygons */}
                     {gridPolygons.reverse().map((points, i) => (

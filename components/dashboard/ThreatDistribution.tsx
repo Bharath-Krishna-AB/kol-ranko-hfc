@@ -1,156 +1,244 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import { getVulnerabilities } from "@/data/vulnerabilities";
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
-// --- Terminal Component ---
-
-const TerminalLog = ({ vulnerabilities }: { vulnerabilities: any[] }) => {
-    const [logs, setLogs] = useState<string[]>([]);
-    const scrollRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        let stepIndex = 0;
-
-        const generateBackendLog = () => {
-            const now = new Date();
-            const time = now.toLocaleTimeString('en-US', { hour12: false, fractionalSecondDigits: 3 });
-
-            // Random context for logs
-            const vuln = vulnerabilities[Math.floor(Math.random() * vulnerabilities.length)] || { package: "unknown", vuln_id: "CVE-2024-XXXX" };
-            const pkg = vuln.package || "next-auth";
-            const id = vuln.vuln_id || "GHSA-7rjr-3q5j-2c77";
-
-            // Simulation of the ACTUAL Python CLI architecture (kolranko.py)
-            const stages = [
-                { stage: "CLI_INIT", msg: `[VulnerabilityScanner] Initializing workspace scan...` },
-                { stage: "EXTRACTOR", msg: `[DependencyExtractor] Parsing package.json dependencies...` },
-                { stage: "EXTRACTOR", msg: `[DependencyExtractor] Found ${Math.floor(Math.random() * 50) + 20} dependencies in node_modules` },
-                { stage: "OSV_CLIENT", msg: `[OSVClient] Querying https://api.osv.dev/v1/querybatch` },
-                { stage: "OSV_CLIENT", msg: `[OSVClient] Response: Found potential match for ${pkg}` },
-                { stage: "DEPENDABOT", msg: `[DependabotClient] Fetching alerts from GitHub API` },
-                { stage: "CONTEXT", msg: `[ContextCollector] Reading context.md from /components/auth` },
-                { stage: "ORCHESTRATOR", msg: `[VulnerabilityAnalyzer] Sending payload to /api/analyze` },
-                { stage: "AI_ENGINE", msg: `[GPT-4o] Analyzing ${id} against enterprise context...` },
-                { stage: "AI_ENGINE", msg: `[GPT-4o] Risk assessment: High confidentiality impact` },
-                { stage: "Orchestrator", msg: `[Pipeline] Saving results to vulnerability_analysis.json` },
-                { stage: "Orchestrator", msg: `[Pipeline] Calculated aggregate risk score: ${(Math.random() * 10).toFixed(1)}/10` }
-            ];
-
-            // Pick a message based on a cycling step index to simulate linear progress
-            // Modulo length ensures it loops forever
-            const currentStage = stages[stepIndex % stages.length];
-
-            const newLog = `[${time}] ${currentStage.msg}`;
-
-            setLogs(prev => [...prev.slice(-18), newLog]);
-
-            stepIndex++;
-
-            // Vary speed based on "stage" complexity
-            // Network requests take longer
-            const delay = currentStage.stage.includes("CLIENT") || currentStage.stage.includes("AI") ?
-                Math.random() * 1000 + 500 :
-                Math.random() * 300 + 100;
-            setTimeout(generateBackendLog, delay);
-        };
-
-        const timeout = setTimeout(generateBackendLog, 500);
-        return () => clearTimeout(timeout);
-    }, [vulnerabilities]);
-
-    useEffect(() => {
-        if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }, [logs]);
-
-    return (
-        <div className="flex flex-col h-full w-full bg-[#1e293b] rounded-lg border border-white/5 p-4 font-space-mono text-xs overflow-hidden relative">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-3 border-b border-white/10 pb-2 z-10">
-                <span className="text-accent font-bold tracking-wider">SENTINEL_CORE_V9</span>
-                <div className="flex gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-                    <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse delay-75"></div>
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse delay-150"></div>
-                </div>
-            </div>
-
-            {/* Logs: Explicit text-white for visibility */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-2 z-10 scrollbar-hide">
-                {logs.map((log, i) => (
-                    <div key={i} className="text-white/90 border-l-2 border-transparent hover:border-accent pl-2 transition-all break-all font-medium leading-relaxed">
-                        <span className="text-accent mr-3">{">"}</span>
-                        {log}
-                    </div>
-                ))}
-                <div className="animate-pulse text-accent font-bold pl-2">_</div>
-            </div>
-        </div>
-    );
-};
-
-
 const ThreatDistribution = () => {
     const container = useRef(null);
+    const pathRef = useRef<SVGPathElement>(null);
+    const areaRef = useRef<SVGPathElement>(null);
+    const topGradientRef = useRef<SVGStopElement>(null);
+
     const rawVulnerabilities = getVulnerabilities();
 
+    // Chart Dimensions (Virtual Units)
+    const width = 600;
+    const height = 300;
+    const padding = 40;
+    const graphWidth = width - padding * 2;
+    const graphHeight = height - padding * 2;
+
+    // Process Data
+    const chartData = useMemo(() => {
+        return rawVulnerabilities.slice(0, 10).map((v, i) => ({
+            id: v.vulnerability_id,
+            score: v.current_score || 0,
+            label: `V${i + 1}`
+        }));
+    }, [rawVulnerabilities]);
+
+    // Helpers
+    const getX = (i: number) => padding + (i / (chartData.length - 1)) * graphWidth;
+    const getY = (score: number) => padding + graphHeight - (score / 10) * graphHeight;
+    const baselineY = height - padding;
+
+    // Path Builder Function
+    const buildPath = (data: { score: number }[], progress: number) => {
+        if (data.length === 0) return "";
+        return data.map((d, i) => {
+            const targetY = getY(d.score);
+            // Interpolate between baseline (0 score) and targetY
+            const currentY = baselineY - ((baselineY - targetY) * progress);
+            return `${i === 0 ? 'M' : 'L'} ${getX(i)},${currentY}`;
+        }).join(" ");
+    };
+
     useGSAP(() => {
-        const tl = gsap.timeline({ delay: 0.4 });
+        const tl = gsap.timeline({ delay: 0.2 });
 
-        // 1. Header slide in
-        tl.from(".terminal-header", { y: -10, opacity: 0, duration: 0.5 });
+        // 1. Chart Structure Entrance
+        tl.from(".chart-header", { y: -20, opacity: 0, duration: 0.6, ease: "power2.out" });
+        tl.from(".chart-grid", { scaleX: 0, opacity: 0, duration: 0.6, stagger: 0.05 }, "-=0.4");
 
-        // 2. Power-on effect for screen (scale Y from center)
-        tl.from(".terminal-screen", {
-            scaleY: 0,
+        // 2. "Elastic Spring" Graph Animation
+        // We animate a proxy value and update the DOM directly for performance
+        const animState = { val: 0 };
+
+        tl.to(animState, {
+            val: 1,
+            duration: 2,
+            ease: "elastic.out(1, 0.5)",
+            onUpdate: () => {
+                const currentPath = buildPath(chartData, animState.val);
+                const currentArea = `${currentPath} L ${getX(chartData.length - 1)},${baselineY} L ${getX(0)},${baselineY} Z`;
+
+                if (pathRef.current) pathRef.current.setAttribute("d", currentPath);
+                if (areaRef.current) areaRef.current.setAttribute("d", currentArea);
+            }
+        }, "-=0.4");
+
+        // 3. Reveal Points (Pop in)
+        tl.from(".data-point", {
+            scale: 0,
             opacity: 0,
             duration: 0.4,
-            ease: "power2.inOut",
-            transformOrigin: "center center"
+            stagger: 0.05,
+            ease: "back.out(2)"
+        }, "-=1.5");
+
+        // 4. Reveal Labels
+        tl.from(".chart-label", { opacity: 0, y: 10, duration: 0.4, stagger: 0.05 }, "-=1.5");
+
+        // 5. Active Scanner Loop
+        gsap.to(".scanner-line", {
+            x: graphWidth,
+            duration: 3,
+            ease: "power1.inOut",
+            repeat: -1,
+            yoyo: true
         });
 
-        // 3. Horizontal expand
-        tl.from(".terminal-screen", {
-            scaleX: 0.95,
-            duration: 0.2,
-            ease: "power2.out"
-        }, "+=0");
+        // 6. Gradient Pulse
+        gsap.to(topGradientRef.current, {
+            stopOpacity: 0.6,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
 
-        // 4. Subtle flicker
-        tl.to(".terminal-screen", { opacity: 0.8, duration: 0.05, yoyo: true, repeat: 3 });
-        tl.to(".terminal-screen", { opacity: 1, duration: 0.1 });
+    }, { scope: container, dependencies: [chartData] });
 
-    }, { scope: container });
+    // Initial Path (Flat) for hydration match
+    const initialPath = buildPath(chartData, 0);
 
     return (
-        <div ref={container} className="flex h-full w-full flex-col gap-4 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden">
+        <div ref={container} className="flex h-full w-full flex-col gap-2 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden relative group">
 
             {/* Header */}
-            <div className="terminal-header flex flex-col gap-2 shrink-0 z-10">
+            <div className="chart-header flex flex-col gap-1 shrink-0 z-10">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
-                        Sentinel Terminal
+                    <h2 className="font-space-mono font-bold text-xl uppercase tracking-tighter text-accent">
+                        Risk Distribution
                     </h2>
-                    <div className="rounded-full bg-accent/10 px-4 py-1.5 text-xs text-accent">
-                        LIVE MONITORING
+                    <div className="flex items-center gap-2">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                        </span>
+                        <div className="rounded-full bg-accent/10 px-3 py-1 text-[10px] text-accent">
+                            LIVE FEED
+                        </div>
                     </div>
                 </div>
-                <p className="text-base font-medium text-gray-500 max-w-md">
-                    Real-time system integrity and threat feed.
+                <p className="text-sm font-medium text-gray-500">
+                    Real-time risk metrics across endpoints.
                 </p>
             </div>
 
-            {/* Inner "Device" Window - Dark Theme (bg-secondary) */}
-            <div className="terminal-screen flex flex-1 items-stretch justify-center overflow-hidden relative rounded-xl bg-secondary border border-border/10 shadow-inner p-2 group">
-                {/* Visual Artifacts / Background for Terminal */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[20px_20px] pointer-events-none opacity-20"></div>
+            {/* Chart Container */}
+            <div className="flex-1 w-full min-h-0 relative flex items-center justify-center">
+                <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
+                    <defs>
+                        <linearGradient id="riskGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop ref={topGradientRef} offset="0%" stopColor="var(--accent-color, #4f46e5)" stopOpacity="0.3" />
+                            <stop offset="100%" stopColor="var(--accent-color, #4f46e5)" stopOpacity="0" />
+                        </linearGradient>
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
 
-                {/* SENTINEL TERMINAL - Full Width */}
-                <div className="w-full h-full relative z-10">
-                    <TerminalLog vulnerabilities={rawVulnerabilities} />
-                </div>
+                    {/* Grid Lines */}
+                    {[0, 2.5, 5, 7.5, 10].map((val) => (
+                        <g key={val} className="chart-grid">
+                            <line
+                                x1={padding}
+                                y1={getY(val)}
+                                x2={width - padding}
+                                y2={getY(val)}
+                                stroke="#e2e8f0"
+                                strokeWidth="1"
+                                strokeDasharray="4 4"
+                            />
+                        </g>
+                    ))}
+
+                    {/* Area Fill */}
+                    <path
+                        ref={areaRef}
+                        d={`${initialPath} L ${getX(chartData.length - 1)},${baselineY} L ${getX(0)},${baselineY} Z`}
+                        fill="url(#riskGradient)"
+                        className="transition-opacity duration-1000"
+                    />
+
+                    {/* Line Stroke with Glow */}
+                    <path
+                        ref={pathRef}
+                        d={initialPath}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        className="text-accent"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        filter="url(#glow)"
+                    />
+
+                    {/* Active Scanner Line */}
+                    <line
+                        className="scanner-line text-accent/50 opacity-50"
+                        x1={padding}
+                        y1={padding}
+                        x2={padding}
+                        y2={height - padding}
+                        stroke="currentColor"
+                        strokeWidth="1"
+                        strokeDasharray="4 2"
+                    />
+
+                    {/* Data Points */}
+                    {chartData.map((d, i) => (
+                        <g key={d.id} className="group/point">
+                            <circle
+                                cx={getX(i)}
+                                cy={getY(d.score)}
+                                r="4"
+                                className="data-point fill-white stroke-accent stroke-[2px] transition-all duration-300 group-hover/point:scale-150 group-hover/point:r-6 cursor-pointer z-20 relative"
+                            />
+                            {/* Detailed Hover Tooltip */}
+                            <g className="opacity-0 group-hover/point:opacity-100 transition-opacity duration-200 pointer-events-none z-30 transform -translate-y-2 group-hover/point:translate-y-0 transition-transform">
+                                <rect
+                                    x={getX(i) - 35}
+                                    y={getY(d.score) - 45}
+                                    width="70"
+                                    height="30"
+                                    rx="6"
+                                    fill="#0f172a"
+                                    className="shadow-xl"
+                                />
+                                <text
+                                    x={getX(i)}
+                                    y={getY(d.score) - 26}
+                                    textAnchor="middle"
+                                    className="text-[12px] fill-white font-bold font-space-mono"
+                                    alignmentBaseline="middle"
+                                >
+                                    Risk: {d.score.toFixed(1)}
+                                </text>
+                            </g>
+                        </g>
+                    ))}
+
+                    {/* X Axis Labels */}
+                    {chartData.map((d, i) => (
+                        <text
+                            key={i}
+                            x={getX(i)}
+                            y={height - padding + 20}
+                            textAnchor="middle"
+                            className="chart-label text-[10px] fill-gray-400 font-bold uppercase tracking-wider"
+                        >
+                            {d.label}
+                        </text>
+                    ))}
+                </svg>
             </div>
         </div>
     );
