@@ -148,6 +148,7 @@ def collect_context_md(root: Path) -> str:
 
 def build_prompt(context: str, alerts: list) -> str:
     alerts_json = json.dumps(alerts, indent=2)
+    return alerts_json
 
     return """
 SYSTEM:
@@ -241,12 +242,17 @@ INPUT:
 # Hugging Face
 # -----------------------------
 
-def query_huggingface(client, prompt: str, api_url: str, model: str, token: str):
-    resp = client.responses.create(
-        model="gpt-4.1-mini",
-        input=prompt,
+def query_huggingface(prompt: str):
+    response = requests.post(
+        "http://localhost:3000/api/llm",
+        json={
+            "prompt": prompt
+        }
     )
-    return resp.output[0].content[0].text
+    
+    response.raise_for_status()
+    print(response.text)
+    return response.json()
 
 # -----------------------------
 # Main
@@ -265,10 +271,10 @@ def main():
     repo_url = os.getenv("GITHUB_REPO_URL")
     gh_token = os.getenv("GITHUB_PAT")
 
-    hf_token = os.getenv("HF_API_TOKEN")
-    hf_model_url = os.getenv("HF_MODEL_URL")
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    # hf_token = os.getenv("HF_API_TOKEN")
+    # hf_model_url = os.getenv("HF_MODEL_URL")
+    # openai_api_key = os.getenv("OPENAI_API_KEY")
+    # client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
     step("Collecting dependencies")
     deps = collect_dependencies(workdir)
@@ -285,13 +291,7 @@ def main():
 
     prompt = build_prompt(context, alerts)
 
-    hf_response = query_huggingface(
-        client,
-        prompt,
-        hf_model_url,
-        "mistralai/Mistral-7B-Instruct-v0.2:featherless-ai",
-        hf_token,
-    )
+    hf_response = query_huggingface(prompt)
 
     # Path("output.json").write_text(prompt)
     Path("output.json").write_text(json.dumps(hf_response, indent=2))

@@ -1,1 +1,352 @@
-"{\n  \"generated_at\": \"2024-06-05T16:00:00Z\",\n  \"aggregate_risk\": {\n    \"risk_score\": 6.7,\n    \"risk_level\": \"high\",\n    \"blast_radius\": 6,\n    \"exploit_likelihood\": 5,\n    \"impact_potential\": 7,\n    \"time_to_exploit_estimate_days\": 20,\n    \"dominant_risk_factors\": [\n      \"Denial of Service vulnerabilities in Microsoft.Build components\",\n      \"Prototype pollution in async and lodash\",\n      \"ReDoS in minimatch and qs\",\n      \"Medium CVSS vulnerabilities with some known exploitability\",\n      \"Lack of patches available for most vulnerabilities\"\n    ]\n  },\n  \"vulnerabilities\": [\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-829\"],\n        \"category\": \"memory\"\n      },\n      \"affected_component\": {\n        \"package\": \"diff\",\n        \"version_range\": \"all versions\"\n      },\n      \"severity\": {\n        \"base_score\": 3.0,\n        \"severity_label\": \"low\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"none\",\n        \"attack_complexity\": 5,\n        \"attack_prerequisites\": []\n      },\n      \"impact\": {\n        \"confidentiality\": 0,\n        \"integrity\": 0,\n        \"availability\": 3,\n        \"data_types_at_risk\": [\"none\"],\n        \"customer_impact\": 2\n      },\n      \"recommendations\": {\n        \"priority\": 3,\n        \"actions\": [\n          \"Monitor for patches from package maintainers\",\n          \"Limit exposure of patch application code\"\n        ],\n        \"short_term_mitigation\": [\"Input validation to reject malformed patches\"],\n        \"long_term_fix\": [\"Update to patched versions when available\"]\n      }\n    },\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-400\"],\n        \"category\": \"memory\"\n      },\n      \"affected_component\": {\n        \"package\": \"Microsoft.Build.Utilities.Core\",\n        \"version_range\": \"all versions up to patch\"\n      },\n      \"severity\": {\n        \"base_score\": 7.3,\n        \"severity_label\": \"high\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"poc\",\n        \"attack_complexity\": 3,\n        \"attack_prerequisites\": [\"Network or local access to trigger DoS\"]\n      },\n      \"impact\": {\n        \"confidentiality\": 1,\n        \"integrity\": 1,\n        \"availability\": 7,\n        \"data_types_at_risk\": [\"internal\"],\n        \"customer_impact\": 6\n      },\n      \"recommendations\": {\n        \"priority\": 8,\n        \"actions\": [\n          \"Implement rate limiting and input validation\",\n          \"Apply patches immediately once available\"\n        ],\n        \"short_term_mitigation\": [\"Monitor service availability and logs\"],\n        \"long_term_fix\": [\"Upgrade to patched Microsoft.Build utilities\"]\n      }\n    },\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-502\", \"CWE-400\"],\n        \"category\": \"other\"\n      },\n      \"affected_component\": {\n        \"package\": \"pip\",\n        \"version_range\": \"all versions using fallback tar extraction\"\n      },\n      \"severity\": {\n        \"base_score\": 5.0,\n        \"severity_label\": \"medium\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"none\",\n        \"attack_complexity\": 4,\n        \"attack_prerequisites\": [\"Attacker supplies crafted tar files\"]\n      },\n      \"impact\": {\n        \"confidentiality\": 3,\n        \"integrity\": 4,\n        \"availability\": 2,\n        \"data_types_at_risk\": [\"internal\"],\n        \"customer_impact\": 4\n      },\n      \"recommendations\": {\n        \"priority\": 5,\n        \"actions\": [\n          \"Validate tarball contents before extraction\",\n          \"Use safe extraction libraries\"\n        ],\n        \"short_term_mitigation\": [\"Restrict pip usage to trusted sources\"],\n        \"long_term_fix\": [\"Patch pip or upgrade\"]\n      }\n    },\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-610\"],\n        \"category\": \"memory\"\n      },\n      \"affected_component\": {\n        \"package\": \"lodash\",\n        \"version_range\": \"all versions using unset and omit functions\"\n      },\n      \"severity\": {\n        \"base_score\": 6.5,\n        \"severity_label\": \"medium\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"poc\",\n        \"attack_complexity\": 4,\n        \"attack_prerequisites\": [\"User input can reach vulnerable functions\"]\n      },\n      \"impact\": {\n        \"confidentiality\": 4,\n        \"integrity\": 5,\n        \"availability\": 3,\n        \"data_types_at_risk\": [\"internal\", \"auth\"],\n        \"customer_impact\": 5\n      },\n      \"recommendations\": {\n        \"priority\": 6,\n        \"actions\": [\n          \"Audit usage of unsafe lodash functions\",\n          \"Apply patches or upgrade lodash versions\"\n        ],\n        \"short_term_mitigation\": [\"Sanitize user input impacting lodash calls\"],\n        \"long_term_fix\": [\"Replace or patch vulnerable lodash functions\"]\n      }\n    },\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-400\"],\n        \"category\": \"memory\"\n      },\n      \"affected_component\": {\n        \"package\": \"minimatch\",\n        \"version_range\": \"all versions up to patch\"\n      },\n      \"severity\": {\n        \"base_score\": 7.5,\n        \"severity_label\": \"high\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"poc\",\n        \"attack_complexity\": 3,\n        \"attack_prerequisites\": [\"User input to pattern matching\"]\n      },\n      \"impact\": {\n        \"confidentiality\": 0,\n        \"integrity\": 2,\n        \"availability\": 7,\n        \"data_types_at_risk\": [\"none\"],\n        \"customer_impact\": 5\n      },\n      \"recommendations\": {\n        \"priority\": 7,\n        \"actions\": [\n          \"Limit exposure of vulnerable minimatch usage\",\n          \"Monitor for patch releases\"\n        ],\n        \"short_term_mitigation\": [\"Restrict user input length to pattern matchers\"],\n        \"long_term_fix\": [\"Upgrade minimatch to patched versions\"]\n      }\n    },\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-610\"],\n        \"category\": \"memory\"\n      },\n      \"affected_component\": {\n        \"package\": \"async\",\n        \"version_range\": \"all versions up to patch\"\n      },\n      \"severity\": {\n        \"base_score\": 7.8,\n        \"severity_label\": \"high\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"poc\",\n        \"attack_complexity\": 4,\n        \"attack_prerequisites\": [\"Exploitable prototype pollution with user input\"]\n      },\n      \"impact\": {\n        \"confidentiality\": 5,\n        \"integrity\": 6,\n        \"availability\": 4,\n        \"data_types_at_risk\": [\"internal\", \"auth\"],\n        \"customer_impact\": 6\n      },\n      \"recommendations\": {\n        \"priority\": 8,\n        \"actions\": [\n          \"Audit async usage paths for prototype pollution exposure\",\n          \"Upgrade async package to secure versions\"\n        ],\n        \"short_term_mitigation\": [\"Sanitize inputs and restrict untrusted data\"],\n        \"long_term_fix\": [\"Patch or replace vulnerable async components\"]\n      }\n    },\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-400\"],\n        \"category\": \"memory\"\n      },\n      \"affected_component\": {\n        \"package\": \"qs\",\n        \"version_range\": \"all affected versions\"\n      },\n      \"severity\": {\n        \"base_score\": 7.5,\n        \"severity_label\": \"high\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"poc\",\n        \"attack_complexity\": 3,\n        \"attack_prerequisites\": [\"User controls query string input\"]\n      },\n      \"impact\": {\n        \"confidentiality\": 0,\n        \"integrity\": 2,\n        \"availability\": 7,\n        \"data_types_at_risk\": [\"none\"],\n        \"customer_impact\": 5\n      },\n      \"recommendations\": {\n        \"priority\": 7,\n        \"actions\": [\n          \"Input sanitization of query strings\",\n          \"Monitor for patches and apply when available\"\n        ],\n        \"short_term_mitigation\": [\"Rate limit requests using qs parsing\"],\n        \"long_term_fix\": [\"Upgrade qs package\"]\n      }\n    },\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-610\"],\n        \"category\": \"memory\"\n      },\n      \"affected_component\": {\n        \"package\": \"js-yaml\",\n        \"version_range\": \"up to patched versions\"\n      },\n      \"severity\": {\n        \"base_score\": 5.3,\n        \"severity_label\": \"medium\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"none\",\n        \"attack_complexity\": 5,\n        \"attack_prerequisites\": [\"User supplied YAML with merge keys\"]\n      },\n      \"impact\": {\n        \"confidentiality\": 3,\n        \"integrity\": 4,\n        \"availability\": 2,\n        \"data_types_at_risk\": [\"internal\"],\n        \"customer_impact\": 4\n      },\n      \"recommendations\": {\n        \"priority\": 5,\n        \"actions\": [\n          \"Sanitize YAML inputs used\",\n          \"Upgrade or patch js-yaml versions\"\n        ],\n        \"short_term_mitigation\": [\"Restrict YAML usage to trusted contexts\"],\n        \"long_term_fix\": [\"Apply fixes or replace vulnerable YAML processing\"]\n      }\n    },\n    {\n      \"source\": \"OSV\",\n      \"classification\": {\n        \"cwe\": [\"CWE-400\"],\n        \"category\": \"memory\"\n      },\n      \"affected_component\": {\n        \"package\": \"rexml\",\n        \"version_range\": \"all versions\"\n      },\n      \"severity\": {\n        \"base_score\": 3.0,\n        \"severity_label\": \"low\"\n      },\n      \"exploitability\": {\n        \"known_exploits\": false,\n        \"exploit_maturity\": \"none\",\n        \"attack_complexity\": 5,\n        \"attack_prerequisites\": [\"Malformed XML input\"]\n      },\n      \"impact\": {\n        \"confidentiality\": 0,\n        \"integrity\": 0,\n        \"availability\": 3,\n        \"data_types_at_risk\": [\"none\"],\n        \"customer_impact\": 2\n      },\n      \"recommendations\": {\n        \"priority\": 3,\n        \"actions\": [\n          \"Validate XML input before parsing\",\n          \"Update rexml to fixed versions\"\n        ],\n        \"short_term_mitigation\": [\"Limit XML parsing to trusted sources\"],\n        \"long_term_fix\": [\"Patch or replace rexml\"]\n      }\n    }\n  ],\n  \"action_plan\": {\n    \"immediate\": [\n      \"Identify usage of Microsoft.Build, async, lodash, minimatch, qs in the codebase\",\n      \"Implement input validation and rate limiting on affected components\",\n      \"Monitor for patches and vendor updates\"\n    ],\n    \"near_term\": [\n      \"Plan and test upgrades for Microsoft.Build and third party packages\",\n      \"Audit pipelines that handle package extraction (pip fallback tar extraction)\",\n      \"Conduct security review focusing on prototype pollution issues\"\n    ],\n    \"long_term\": [\n      \"Establish dependency monitoring and automatic patching workflow\",\n      \"Replace or refactor vulnerable libraries with more secure alternatives\",\n      \"Integrate runtime protections for memory and resource exhaustion attacks\"\n    ],\n    \"estimated_total_effort_hours\": 40\n  }\n}"
+{
+  "success": true,
+  "data": {
+    "vulnerabilities": [
+      {
+        "vulnerability_id": "GHSA-fwr7-v2mv-hh25",
+        "name": "Prototype Pollution in async",
+        "current_score": 7.8,
+        "severity": "HIGH",
+        "status_tags": [
+          "ACTIVELY-EXPLOITED"
+        ],
+        "worst_case_scenario": "An advanced threat actor could exploit this Prototype Pollution to manipulate application behavior, leading to unauthorized access, potentially causing significant data breaches and $1-3M in losses.",
+        "executive_verdict": {
+          "risk_concentration": "Top 1 vulnerabilities represent 15% of total risk",
+          "exposure_reduction": "Fixing this reduces attack surface by 10%",
+          "business_priority": "This vulnerability could lead to severe data breaches affecting customer trust and regulatory compliance."
+        },
+        "impact_analysis": {
+          "financial": 80,
+          "reputation": 90,
+          "operational": 70,
+          "legal": 85,
+          "compliance": 90
+        },
+        "fix_recommendation": {
+          "action": "URGENT",
+          "est_time": "1-2 days",
+          "mitigation": "Implement input validation and sanitization controls."
+        },
+        "technical_details": {
+          "cvss_vector": "7.8",
+          "affected_components": [
+            "async"
+          ],
+          "attack_vector": "Network",
+          "exploit_available": true,
+          "patch_available": false
+        },
+        "calculation_breakdown": {
+          "likelihood": 0.7,
+          "impact": 0.78,
+          "exposure": 0.8,
+          "formula_used": "(1.0 * 0.5 * 0.7 * 1.0 * 0.00706) * 10"
+        }
+      },
+      {
+        "vulnerability_id": "GHSA-6rw7-vpxm-498p",
+        "name": "qs's arrayLimit bypass in its bracket notation allows DoS via memory exhaustion",
+        "current_score": 7.5,
+        "severity": "HIGH",
+        "status_tags": [
+          "ACTIVELY-EXPLOITED"
+        ],
+        "worst_case_scenario": "A malicious actor could exploit this DoS vulnerability to exhaust server memory, leading to service downtime, potentially causing a 24-hour outage and $500K in losses.",
+        "executive_verdict": {
+          "risk_concentration": "Top 2 vulnerabilities represent 30% of total risk",
+          "exposure_reduction": "Fixing this reduces attack surface by 15%",
+          "business_priority": "This vulnerability poses a risk to service availability, impacting customer satisfaction and revenue."
+        },
+        "impact_analysis": {
+          "financial": 70,
+          "reputation": 80,
+          "operational": 90,
+          "legal": 50,
+          "compliance": 70
+        },
+        "fix_recommendation": {
+          "action": "URGENT",
+          "est_time": "1-2 days",
+          "mitigation": "Implement rate limiting and input validation."
+        },
+        "technical_details": {
+          "cvss_vector": "7.5",
+          "affected_components": [
+            "qs"
+          ],
+          "attack_vector": "Network",
+          "exploit_available": true,
+          "patch_available": false
+        },
+        "calculation_breakdown": {
+          "likelihood": 0.7,
+          "impact": 0.75,
+          "exposure": 0.8,
+          "formula_used": "(1.0 * 0.5 * 0.7 * 1.0 * 0.00163) * 10"
+        }
+      },
+      {
+        "vulnerability_id": "GHSA-f8q6-p94x-37v3",
+        "name": "minimatch ReDoS vulnerability",
+        "current_score": 7.5,
+        "severity": "HIGH",
+        "status_tags": [
+          "ACTIVELY-EXPLOITED"
+        ],
+        "worst_case_scenario": "An attacker could exploit this ReDoS vulnerability to degrade application performance, leading to service unavailability, potentially causing a 12-hour outage and $300K in losses.",
+        "executive_verdict": {
+          "risk_concentration": "Top 3 vulnerabilities represent 45% of total risk",
+          "exposure_reduction": "Fixing this reduces attack surface by 12%",
+          "business_priority": "This vulnerability can severely impact application performance and user experience."
+        },
+        "impact_analysis": {
+          "financial": 60,
+          "reputation": 70,
+          "operational": 80,
+          "legal": 40,
+          "compliance": 60
+        },
+        "fix_recommendation": {
+          "action": "URGENT",
+          "est_time": "1-2 days",
+          "mitigation": "Implement input validation and monitoring for unusual patterns."
+        },
+        "technical_details": {
+          "cvss_vector": "7.5",
+          "affected_components": [
+            "minimatch"
+          ],
+          "attack_vector": "Network",
+          "exploit_available": true,
+          "patch_available": false
+        },
+        "calculation_breakdown": {
+          "likelihood": 0.7,
+          "impact": 0.75,
+          "exposure": 0.8,
+          "formula_used": "(1.0 * 0.5 * 0.7 * 1.0 * 0.00464) * 10"
+        }
+      },
+      {
+        "vulnerability_id": "GHSA-w3q9-fxm7-j8fq",
+        "name": ".NET Denial of Service Vulnerability",
+        "current_score": 7.3,
+        "severity": "HIGH",
+        "status_tags": [
+          "ACTIVELY-EXPLOITED"
+        ],
+        "worst_case_scenario": "An attacker could exploit this DoS vulnerability to crash .NET applications, leading to service interruptions, potentially causing a 48-hour outage and $1M in losses.",
+        "executive_verdict": {
+          "risk_concentration": "Top 4 vulnerabilities represent 60% of total risk",
+          "exposure_reduction": "Fixing this reduces attack surface by 20%",
+          "business_priority": "This vulnerability threatens the availability of critical .NET applications."
+        },
+        "impact_analysis": {
+          "financial": 80,
+          "reputation": 70,
+          "operational": 90,
+          "legal": 60,
+          "compliance": 80
+        },
+        "fix_recommendation": {
+          "action": "URGENT",
+          "est_time": "1-2 days",
+          "mitigation": "Implement application monitoring and resource limits."2
+        },
+        "technical_details": {
+          "cvss_vector": "7.3",
+          "affected_components": [
+            "Microsoft.Build.Utilities.Core",
+            "Microsoft.Build"
+          ],
+          "attack_vector": "Network",
+          "exploit_available": true,
+          "patch_available": false
+        },
+        "calculation_breakdown": {
+          "likelihood": 0.7,
+          "impact": 0.73,
+          "exposure": 0.8,
+          "formula_used": "(1.0 * 0.5 * 0.7 * 1.0 * 0.0003) * 10"
+        }
+      },
+      {
+        "vulnerability_id": "GHSA-xxjr-mmjv-4gpg",
+        "name": "Lodash has Prototype Pollution Vulnerability in `_.unset` and `_.omit` functions",
+        "current_score": 6.5,
+        "severity": "MEDIUM",
+        "status_tags": [
+          "ACTIVELY-EXPLOITED"
+        ],
+        "worst_case_scenario": "An attacker could exploit this Prototype Pollution to manipulate application data, leading to unauthorized data access, potentially causing significant data integrity issues and $500K in losses.",
+        "executive_verdict": {
+          "risk_concentration": "Top 5 vulnerabilities represent 70% of total risk",
+          "exposure_reduction": "Fixing this reduces attack surface by 8%",
+          "business_priority": "This vulnerability can lead to unauthorized data manipulation affecting business operations."
+        },
+        "impact_analysis": {
+          "financial": 60,
+          "reputation": 70,
+          "operational": 60,
+          "legal": 50,
+          "compliance": 70
+        },
+        "fix_recommendation": {
+          "action": "SCHEDULED",
+          "est_time": "2-4 hours",
+          "mitigation": "Implement input validation and sanitization controls."
+        },
+        "technical_details": {
+          "cvss_vector": "6.5",
+          "affected_components": [
+            "lodash"
+          ],
+          "attack_vector": "Network",
+          "exploit_available": true,
+          "patch_available": false
+        },
+        "calculation_breakdown": {
+          "likelihood": 0.6,
+          "impact": 0.65,
+          "exposure": 0.8,
+          "formula_used": "(1.0 * 0.5 * 0.6 * 1.0 * 0.0006) * 10"
+        }
+      },
+      {
+        "vulnerability_id": "GHSA-4xh5-x5gv-qwph",
+        "name": "pip's fallback tar extraction doesn't check symbolic links point to extraction directory",
+        "current_score": 4,
+        "severity": "MEDIUM",
+        "status_tags": [
+          "PRODUCTION"
+        ],
+        "worst_case_scenario": "An attacker could exploit this vulnerability to gain unauthorized access to the filesystem, leading to potential data breaches, potentially causing $200K in losses.",
+        "executive_verdict": {
+          "risk_concentration": "Top 6 vulnerabilities represent 75% of total risk",
+          "exposure_reduction": "Fixing this reduces attack surface by 5%",
+          "business_priority": "This vulnerability poses a risk to sensitive data exposure."
+        },
+        "impact_analysis": {
+          "financial": 40,
+          "reputation": 50,
+          "operational": 30,
+          "legal": 40,
+          "compliance": 50
+        },
+        "fix_recommendation": {
+          "action": "SCHEDULED",
+          "est_time": "2-4 hours",
+          "mitigation": "Implement access controls and monitoring."
+        },
+        "technical_details": {
+          "cvss_vector": "0.0",
+          "affected_components": [
+            "pip"
+          ],
+          "attack_vector": "Local",
+          "exploit_available": false,
+          "patch_available": false
+        },
+        "calculation_breakdown": {
+          "likelihood": 0.4,
+          "impact": 0.4,
+          "exposure": 0.8,
+          "formula_used": "(0.4 * 0.4 * 0.8) * 10"
+        }
+      },
+      {
+        "vulnerability_id": "GHSA-4gmj-3p3h-gm8h",
+        "name": "es5-ext vulnerable to Regular Expression Denial of Service in `function#copy` and `function#toStringTokens`",
+        "current_score": 3,
+        "severity": "LOW",
+        "status_tags": [
+          "PRODUCTION"
+        ],
+        "worst_case_scenario": "An attacker could exploit this vulnerability to cause performance degradation, leading to slow application response times, potentially causing $100K in losses.",
+        "executive_verdict": {
+          "risk_concentration": "Top 7 vulnerabilities represent 80% of total risk",
+          "exposure_reduction": "Fixing this reduces attack surface by 3%",
+          "business_priority": "This vulnerability can affect application performance and user experience."
+        },
+        "impact_analysis": {
+          "financial": 20,
+          "reputation": 30,
+          "operational": 20,
+          "legal": 10,
+          "compliance": 20
+        },
+        "fix_recommendation": {
+          "action": "MONITOR",
+          "est_time": "Next maintenance window",
+          "mitigation": "Implement performance monitoring."
+        },
+        "technical_details": {
+          "cvss_vector": "0.0",
+          "affected_components": [
+            "es5-ext"
+          ],
+          "attack_vector": "Local",
+          "exploit_available": false,
+          "patch_available": false
+        },
+        "calculation_breakdown": {
+          "likelihood": 0.3,
+          "impact": 0.3,
+          "exposure": 0.8,
+          "formula_used": "(0.3 * 0.3 * 0.8) * 10"
+        }
+      },
+      {
+        "vulnerability_id": "GHSA-c2f4-jgmc-q2r5",
+        "name": "REXML has DoS condition when parsing malformed XML file",
+        "current_score": 2,
+        "severity": "LOW",
+        "status_tags": [
+          "PRODUCTION"
+        ],
+        "worst_case_scenario": "An attacker could exploit this vulnerability to cause application crashes, leading to service interruptions, potentially causing $50K in losses.",
+        "executive_verdict": {
+          "risk_concentration": "Top 8 vulnerabilities represent 85% of total risk",
+          "exposure_reduction": "Fixing this reduces attack surface by 2%",
+          "business_priority": "This vulnerability can lead to service disruptions affecting user experience."
+        },
+        "impact_analysis": {
+          "financial": 10,
+          "reputation": 20,
+          "operational": 10,
+          "legal": 5,
+          "compliance": 10
+        },
+        "fix_recommendation": {
+          "action": "MONITOR",
+          "est_time": "Next maintenance window",
+          "mitigation": "Implement input validation."
+        },
+        "technical_details": {
+          "cvss_vector": "0.0",
+          "affected_components": [
+            "rexml"
+          ],
+          "attack_vector": "Local",
+          "exploit_available": false,
+          "patch_available": false
+        },
+        "calculation_breakdown": {
+          "likelihood": 0.2,
+          "impact": 0.2,
+          "exposure": 0.8,
+          "formula_used": "(0.2 * 0.2 * 0.8) * 10"
+        }
+      }
+    ],
+    "total_count": 8,
+    "analyzed_at": "2026-01-31T05:28:11.868Z"
+  },
+  "metadata": {
+    "model": "gpt-4o-mini",
+    "tokens_used": 8402,
+    "prompt_tokens": 5306,
+    "completion_tokens": 3096
+  }
+}
