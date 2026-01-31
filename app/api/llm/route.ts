@@ -176,44 +176,55 @@ Calculate: "Fixing this reduces attack surface by X%"
 6. **NO PLACEHOLDER TEXT** - Use "Unknown" or 0 if data is truly missing
 
 ## REQUIRED JSON OUTPUT SCHEMA
-Return an array of vulnerability objects, each containing:
+Return a JSON object with this structure:
 
 {
-  "vulnerability_id": "string (CVE-ID or internal ID)",
-  "name": "string (vulnerability name)",
-  "current_score": number (0.0-10.0, calculated risk score),
-  "severity": "string (CRITICAL|HIGH|MEDIUM|LOW)",
-  "status_tags": ["array of applicable tags from approved list"],
-  "worst_case_scenario": "string (business-focused impact narrative)",
-  "executive_verdict": {
-    "risk_concentration": "string (percentage of total risk)",
-    "exposure_reduction": "string (percentage reduction if fixed)",
-    "business_priority": "string (why this matters to business)"
-  },
-  "impact_analysis": {
-    "financial": number (0-100),
-    "reputation": number (0-100),
-    "operational": number (0-100),
-    "legal": number (0-100),
-    "compliance": number (0-100)
-  },
-  "fix_recommendation": {
-    "action": "string (IMMEDIATE|URGENT|SCHEDULED|MONITOR)",
-    "est_time": "string (time estimate)",
-    "mitigation": "string (specific compensating controls if no patch)"
-  },
-  "technical_details": {
-    "cvss_vector": "string (if available)",
-    "affected_components": ["array of affected systems/libraries"],
-    "attack_vector": "string",
-    "exploit_available": boolean,
-    "patch_available": boolean
-  },
-  "calculation_breakdown": {
-    "likelihood": number (0.0-1.0),
-    "impact": number (0.0-1.0),
-    "exposure": number (0.0-1.0),
-    "formula_used": "string (show calculation)"
+  "vulnerabilities": [
+    {
+      "vulnerability_id": "string (CVE-ID or internal ID)",
+      "name": "string (vulnerability name)",
+      "current_score": number (0.0-10.0, calculated risk score),
+      "severity": "string (CRITICAL|HIGH|MEDIUM|LOW)",
+      "status_tags": ["array of applicable tags from approved list"],
+      "worst_case_scenario": "string (business-focused impact narrative)",
+      "executive_verdict": {
+        "risk_concentration": "string (percentage of total risk)",
+        "exposure_reduction": "string (percentage reduction if fixed)",
+        "business_priority": "string (why this matters to business)"
+      },
+      "impact_analysis": {
+        "financial": number (0-100),
+        "reputation": number (0-100),
+        "operational": number (0-100),
+        "legal": number (0-100),
+        "compliance": number (0-100)
+      },
+      "fix_recommendation": {
+        "action": "string (IMMEDIATE|URGENT|SCHEDULED|MONITOR)",
+        "est_time": "string (time estimate)",
+        "mitigation": "string (specific compensating controls if no patch)"
+      },
+      "technical_details": {
+        "cvss_vector": "string (if available)",
+        "affected_components": ["array of affected systems/libraries"],
+        "attack_vector": "string",
+        "exploit_available": boolean,
+        "patch_available": boolean
+      },
+      "calculation_breakdown": {
+        "likelihood": number (0.0-1.0),
+        "impact": number (0.0-1.0),
+        "exposure": number (0.0-1.0),
+        "formula_used": "string (show calculation)"
+      }
+    }
+  ],
+  "summary": {
+    "total_analyzed": number,
+    "critical_count": number,
+    "high_count": number,
+    "medium_count": number,
+    "low_count": number
   }
 }
 
@@ -223,7 +234,7 @@ Return an array of vulnerability objects, each containing:
 3. Generate ALL required fields with accurate data
 4. Sort by current_score in descending order
 5. Return ONLY the top 10 highest-risk vulnerabilities
-6. Output ONLY the JSON array - nothing else
+6. Output ONLY the JSON object with "vulnerabilities" and "summary" keys
 7. Ensure the JSON is valid and parseable
 8. DO NOT include markdown code blocks or explanations
 
@@ -241,16 +252,10 @@ function cleanJsonResponse(rawResponse: string): any {
     // Parse JSON
     const parsed = JSON.parse(cleaned);
     
-    // Ensure it's an array
-    if (Array.isArray(parsed)) {
-      return parsed;
-    } else if (parsed.vulnerabilities && Array.isArray(parsed.vulnerabilities)) {
-      return parsed.vulnerabilities;
-    } else {
-      return [parsed];
-    }
+    return parsed;
   } catch (error) {
     console.error('JSON parsing error:', error);
+    console.error('Raw response:', rawResponse);
     throw new Error('Failed to parse AI response as JSON');
   }
 }
@@ -327,15 +332,27 @@ export async function POST(request: NextRequest) {
     console.log('📥 Received response from OpenAI');
 
     // Clean and parse JSON
-    const vulnerabilities = cleanJsonResponse(rawResult);
+    const parsedResponse = cleanJsonResponse(rawResult);
+
+    // Extract vulnerabilities and summary
+    const vulnerabilities = parsedResponse.vulnerabilities || [];
+    const summary = parsedResponse.summary || {
+      total_analyzed: vulnerabilities.length,
+      critical_count: vulnerabilities.filter((v: any) => v.severity === 'CRITICAL').length,
+      high_count: vulnerabilities.filter((v: any) => v.severity === 'HIGH').length,
+      medium_count: vulnerabilities.filter((v: any) => v.severity === 'MEDIUM').length,
+      low_count: vulnerabilities.filter((v: any) => v.severity === 'LOW').length,
+    };
 
     console.log(`✅ Successfully parsed ${vulnerabilities.length} vulnerabilities`);
+    console.log(`📊 Summary - CRITICAL: ${summary.critical_count}, HIGH: ${summary.high_count}, MEDIUM: ${summary.medium_count}, LOW: ${summary.low_count}`);
 
-    // Return structured response
+    // Return structured response with all accessible parameters
     return NextResponse.json({
       success: true,
       data: {
         vulnerabilities: vulnerabilities,
+        summary: summary,
         total_count: vulnerabilities.length,
         analyzed_at: new Date().toISOString()
       },
