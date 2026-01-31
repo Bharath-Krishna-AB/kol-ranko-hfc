@@ -19,7 +19,6 @@ from typing import List, Optional, Tuple, Dict, Any
 from urllib.parse import urlparse, quote
 import requests
 from dotenv import load_dotenv
-from typing import Any, Dict, List
 
 # -----------------------------
 # Configuration
@@ -471,10 +470,6 @@ class ContextCollector:
         return "\n\n".join(context_blocks)
 
 
-# -----------------------------
-# AI Analysis
-# -----------------------------
-
 class VulnerabilityAnalyzer:
     """Analyze vulnerabilities using AI-powered API."""
 
@@ -569,35 +564,11 @@ class VulnerabilityAnalyzer:
 
         return "\n".join(lines)
 
-def extract_easy_fixes(analysis: Dict[str, Any]) -> List[Dict[str, Any]]:
-    fixes = []
-
-    for v in analysis.get("vulnerabilities", []):
-        description = v.get("summary") or v.get("details", "")
-
-        for aff in v.get("affected", []):
-            pkg_info = aff.get("package", {})
-            pkg = pkg_info.get("name")
-            ecosystem = pkg_info.get("ecosystem")
-
-            fixed_versions = aff.get("fixed_versions") or []
-            if not pkg or not ecosystem or not fixed_versions:
-                continue
-
-            fixes.append({
-                "package": pkg,
-                "patched_version": fixed_versions[-1],  # highest known fix
-                "ecosystem": ecosystem,
-                "reason": description,
-            })
-
-    return fixes
-
 # -----------------------------
 # URL Encoding
 # -----------------------------
 
-def encode_results_to_url(results: Dict[str, Any], base_url: str = "http://localhost:3000") -> str:
+def encode_results_to_url(results: Dict[str, Any], base_url: str = "http://localhost:3000/signin") -> str:
     """
     Encode results into a compressed, URL-safe format.
     Uses zlib compression + base64 encoding for optimal size.
@@ -618,7 +589,6 @@ def encode_results_to_url(results: Dict[str, Any], base_url: str = "http://local
     url = f"{base_url}?data={quote(encoded)}"
 
     return url
-
 
 # -----------------------------
 # Pretty Output
@@ -985,11 +955,7 @@ def main():
 
         step("✓ Scan complete")
 
-        easy_fixes = extract_easy_fixes(results)
-
-        for fix in easy_fixes:
-            print(f"\nAttempting fix for {fix['package']}")
-            run_fix_agent(fix)
+        # here
 
     except Exception as e:
         logger.error(f"{Colors.RED} Scan failed: {e}", exc_info=True)

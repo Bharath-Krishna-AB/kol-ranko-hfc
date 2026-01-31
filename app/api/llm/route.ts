@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 // ===== OPENAI CONFIGURATION =====
-const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
-const MODEL_NAME = 'gpt-4o-mini'; // Cost-effective and fast. Use 'gpt-4o' for better quality
+const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+const MODEL_NAME = "gpt-4o-mini"; // Cost-effective and fast. Use 'gpt-4o' for better quality
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 // ===== COMPREHENSIVE SYSTEM PROMPT =====
@@ -18,7 +18,7 @@ const CYBERSECURITY_SYSTEM_PROMPT = `You are an Elite Cybersecurity Threat Intel
 
 ### 1. LIKELIHOOD SCORE (0.0 - 1.0)
 Calculate based on:
-- **Attack Vector (AV)**: 
+- **Attack Vector (AV)**:
   * Network (N) = 1.0
   * Adjacent (A) = 0.7
   * Local (L) = 0.4
@@ -245,18 +245,18 @@ function cleanJsonResponse(rawResponse: string): any {
   try {
     // Remove markdown code blocks if present
     let cleaned = rawResponse.trim();
-    cleaned = cleaned.replace(/```json\n?/g, '');
-    cleaned = cleaned.replace(/```\n?/g, '');
+    cleaned = cleaned.replace(/```json\n?/g, "");
+    cleaned = cleaned.replace(/```\n?/g, "");
     cleaned = cleaned.trim();
-    
+
     // Parse JSON
     const parsed = JSON.parse(cleaned);
-    
+
     return parsed;
   } catch (error) {
-    console.error('JSON parsing error:', error);
-    console.error('Raw response:', rawResponse);
-    throw new Error('Failed to parse AI response as JSON');
+    console.error("JSON parsing error:", error);
+    console.error("Raw response:", rawResponse);
+    throw new Error("Failed to parse AI response as JSON");
   }
 }
 
@@ -268,42 +268,50 @@ export async function POST(request: NextRequest) {
 
     // Validate input
     if (!prompt && !vulnerabilityData) {
-      return NextResponse.json({ 
-        error: 'Missing input data. Provide either "prompt" or "vulnerabilityData"' 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error:
+            'Missing input data. Provide either "prompt" or "vulnerabilityData"',
+        },
+        { status: 400 },
+      );
     }
 
     if (!OPENAI_API_KEY) {
-      return NextResponse.json({ 
-        error: 'Server configuration error: Missing OPENAI_API_KEY environment variable' 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Server configuration error: Missing OPENAI_API_KEY environment variable",
+        },
+        { status: 500 },
+      );
     }
 
     // Construct user prompt
-    const userPrompt = vulnerabilityData 
+    const userPrompt = vulnerabilityData
       ? `Analyze the following vulnerability data and return the top 10 highest-risk threats:\n\n${JSON.stringify(vulnerabilityData, null, 2)}`
       : prompt;
 
-    console.log('📤 Sending request to OpenAI...');
+    console.log("📤 Sending request to OpenAI...");
 
     // Call OpenAI API
     const response = await fetch(OPENAI_API_URL, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: MODEL_NAME,
         messages: [
-          { 
-            role: "system", 
-            content: CYBERSECURITY_SYSTEM_PROMPT 
+          {
+            role: "system",
+            content: CYBERSECURITY_SYSTEM_PROMPT,
           },
-          { 
-            role: "user", 
-            content: userPrompt 
-          }
+          {
+            role: "user",
+            content: userPrompt,
+          },
         ],
         temperature: 0.1, // Low temperature for consistent, factual output
         response_format: { type: "json_object" }, // Force JSON output (GPT-4 and newer)
@@ -313,23 +321,29 @@ export async function POST(request: NextRequest) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('❌ OpenAI API Error:', data);
-      return NextResponse.json({ 
-        error: 'OpenAI API error', 
-        details: data.error?.message || data 
-      }, { status: response.status });
+      console.error("❌ OpenAI API Error:", data);
+      return NextResponse.json(
+        {
+          error: "OpenAI API error",
+          details: data.error?.message || data,
+        },
+        { status: response.status },
+      );
     }
 
     // Extract AI response
     const rawResult = data.choices?.[0]?.message?.content;
 
     if (!rawResult) {
-      return NextResponse.json({ 
-        error: 'No response from OpenAI model' 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: "No response from OpenAI model",
+        },
+        { status: 500 },
+      );
     }
 
-    console.log('📥 Received response from OpenAI');
+    console.log("📥 Received response from OpenAI");
 
     // Clean and parse JSON
     const parsedResponse = cleanJsonResponse(rawResult);
@@ -338,14 +352,23 @@ export async function POST(request: NextRequest) {
     const vulnerabilities = parsedResponse.vulnerabilities || [];
     const summary = parsedResponse.summary || {
       total_analyzed: vulnerabilities.length,
-      critical_count: vulnerabilities.filter((v: any) => v.severity === 'CRITICAL').length,
-      high_count: vulnerabilities.filter((v: any) => v.severity === 'HIGH').length,
-      medium_count: vulnerabilities.filter((v: any) => v.severity === 'MEDIUM').length,
-      low_count: vulnerabilities.filter((v: any) => v.severity === 'LOW').length,
+      critical_count: vulnerabilities.filter(
+        (v: any) => v.severity === "CRITICAL",
+      ).length,
+      high_count: vulnerabilities.filter((v: any) => v.severity === "HIGH")
+        .length,
+      medium_count: vulnerabilities.filter((v: any) => v.severity === "MEDIUM")
+        .length,
+      low_count: vulnerabilities.filter((v: any) => v.severity === "LOW")
+        .length,
     };
 
-    console.log(`✅ Successfully parsed ${vulnerabilities.length} vulnerabilities`);
-    console.log(`📊 Summary - CRITICAL: ${summary.critical_count}, HIGH: ${summary.high_count}, MEDIUM: ${summary.medium_count}, LOW: ${summary.low_count}`);
+    console.log(
+      `✅ Successfully parsed ${vulnerabilities.length} vulnerabilities`,
+    );
+    console.log(
+      `📊 Summary - CRITICAL: ${summary.critical_count}, HIGH: ${summary.high_count}, MEDIUM: ${summary.medium_count}, LOW: ${summary.low_count}`,
+    );
 
     // Return structured response with all accessible parameters
     return NextResponse.json({
@@ -354,25 +377,24 @@ export async function POST(request: NextRequest) {
         vulnerabilities: vulnerabilities,
         summary: summary,
         total_count: vulnerabilities.length,
-        analyzed_at: new Date().toISOString()
+        analyzed_at: new Date().toISOString(),
       },
       metadata: {
         model: MODEL_NAME,
-        tokens_used: data.usage?.total_tokens || 'N/A',
-        prompt_tokens: data.usage?.prompt_tokens || 'N/A',
-        completion_tokens: data.usage?.completion_tokens || 'N/A'
-      }
-    });
-
-  } catch (error: any) {
-    console.error('❌ Server Error:', error);
-    return NextResponse.json(
-      { 
-        error: 'Internal server error', 
-        details: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        tokens_used: data.usage?.total_tokens || "N/A",
+        prompt_tokens: data.usage?.prompt_tokens || "N/A",
+        completion_tokens: data.usage?.completion_tokens || "N/A",
       },
-      { status: 500 }
+    });
+  } catch (error: any) {
+    console.error("❌ Server Error:", error);
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        details: error.message,
+        stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+      },
+      { status: 500 },
     );
   }
 }

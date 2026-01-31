@@ -1,6 +1,9 @@
 // agents/analyzer.ts
-import OpenAI from 'openai';
-import type { EnrichedVulnerability, AnalyzedVulnerability } from '../types';
+import OpenAI from "openai";
+import type {
+  EnrichedVulnerability,
+  AnalyzedVulnerability,
+} from "@/schemas/agent";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -8,7 +11,7 @@ const openai = new OpenAI({
 
 export async function analyzeVulnerabilities(
   enriched: EnrichedVulnerability[],
-  context?: string
+  context?: string,
 ): Promise<AnalyzedVulnerability[]> {
   const analyzed: AnalyzedVulnerability[] = [];
 
@@ -27,7 +30,7 @@ export async function analyzeVulnerabilities(
 
 async function analyzeVulnerability(
   vuln: EnrichedVulnerability,
-  context?: string
+  context?: string,
 ): Promise<AnalyzedVulnerability> {
   const osvData = vuln.osv_data!;
 
@@ -40,25 +43,25 @@ async function analyzeVulnerability(
     references: osvData.references,
     aliases: osvData.aliases,
     affected: osvData.affected,
-    database_specific: osvData.database_specific
+    database_specific: osvData.database_specific,
   };
 
   const systemPrompt = buildEnterpriseSystemPrompt(context);
   const userMessage = buildUserMessage(vuln, vulnContext);
 
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: "gpt-4o",
     messages: [
       {
-        role: 'system',
-        content: systemPrompt
+        role: "system",
+        content: systemPrompt,
       },
       {
-        role: 'user',
-        content: userMessage
-      }
+        role: "user",
+        content: userMessage,
+      },
     ],
-    response_format: { type: 'json_object' },
+    response_format: { type: "json_object" },
     temperature: 0.2, // Lower temperature for more consistent enterprise analysis
   });
 
@@ -84,7 +87,7 @@ function buildEnterpriseSystemPrompt(context?: string): string {
 
 ### 1. LIKELIHOOD SCORE (0.0 - 1.0)
 Calculate based on:
-- **Attack Vector (AV)**: 
+- **Attack Vector (AV)**:
   * Network (N) = 1.0
   * Adjacent (A) = 0.7
   * Local (L) = 0.4
@@ -145,7 +148,9 @@ Calculate based on:
 - **MEDIUM (4.0-6.9)**: Patch within 30 days
 - **LOW (0.1-3.9)**: Patch within 90 days
 
-${context ? `
+${
+  context
+    ? `
 ## PROJECT CONTEXT FOR BUSINESS IMPACT ANALYSIS
 
 ${context}
@@ -162,13 +167,15 @@ ${context}
 - Vulnerability in payment processing module → exposure=1.0, customer_impact=10, financial_impact=95
 - Vulnerability in internal admin tool → exposure=0.4, customer_impact=5, operational_impact=40
 - Vulnerability in marketing website → exposure=0.8, customer_impact=3, reputation_impact=60
-` : `
+`
+    : `
 ## NO PROJECT CONTEXT PROVIDED
 Since no project context was provided, make conservative estimates:
 - Assume production environment (exposure base = 0.8)
 - Use moderate customer_impact based on package criticality
 - Provide generic but actionable recommendations
-`}
+`
+}
 
 ## REQUIRED JSON OUTPUT SCHEMA
 Return a JSON object with this exact structure:
@@ -223,7 +230,7 @@ Begin analysis now.`;
 
 function buildUserMessage(
   vuln: EnrichedVulnerability,
-  vulnContext: any
+  vulnContext: any,
 ): string {
   return `Analyze this vulnerability and return the required JSON:
 
