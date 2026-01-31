@@ -25,10 +25,10 @@ const DashboardPage = () => {
 
   return (
     <div className="max-h-screen overflow-hidden" ref={container}>
-      <main className="container mx-auto h-full px-4 md:px-6 py-4">
-        <div className="grid w-full grid-cols-2 lg:gap-8 gap-6 h-[calc(100vh-6rem)] min-h-[600px]">
+      <main className="container mx-auto h-full px-2 py-2">
+        <div className="grid w-full grid-cols-2 gap-2 h-[calc(100vh-5rem)] min-h-[600px]">
           {/* Left Column (Action Queue & Threat Dist) - Even Split */}
-          <div className="flex flex-col gap-6 h-full min-h-0">
+          <div className="flex flex-col gap-2 h-full min-h-0">
             <section className="dashboard-section flex-1 min-h-0 overflow-hidden">
               <ActionQueue />
             </section>
@@ -38,7 +38,7 @@ const DashboardPage = () => {
           </div>
 
           {/* Right Column (Impact Radar & Verdict) - Custom Split */}
-          <div className="flex flex-col gap-6 h-full min-h-0">
+          <div className="flex flex-col gap-2 h-full min-h-0">
             <section className="dashboard-section h-[65%] min-h-0 overflow-hidden">
               <ImpactRadarGraph />
             </section>

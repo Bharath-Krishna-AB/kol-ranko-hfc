@@ -22,19 +22,19 @@ const ActionQueue = () => {
     }, { scope: container });
 
     return (
-        <div ref={container} className="flex max-h-screen flex-col gap-2 rounded-2xl border border-border/50 bg-white/40 p-4 shadow-sm backdrop-blur-md overflow-hidden">
+        <div ref={container} className="flex h-full flex-col gap-1 rounded-2xl border border-border/50 bg-white/40 p-2 shadow-sm backdrop-blur-md overflow-hidden">
             {/* Header Section */}
-            <div className="flex flex-col gap-1 shrink-0">
+            <div className="flex flex-col gap-0.5 shrink-0">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
+                    <h2 className="font-space-mono font-bold text-lg uppercase tracking-tighter text-accent">
                         Action Queue
                     </h2>
-                    <div className="rounded-full bg-accent/10 px-4 py-1.5 text-xs text-accent">
+                    <div className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent">
                         LIVE RISK FEED
                     </div>
                 </div>
-                <p className="text-base font-medium text-gray-500 max-w-md">
-                    Prioritized by contextual risk: <span className="text-black font-bold">Likelihood × Impact × Exposure</span>.
+                <p className="text-[10px] font-medium text-gray-500 max-w-md">
+                    Prioritized: <span className="text-black font-bold">Likelihood × Impact × Exposure</span>.
                 </p>
             </div>
 

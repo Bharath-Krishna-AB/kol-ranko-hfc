@@ -13,10 +13,10 @@ const ThreatDistribution = () => {
 
     const rawVulnerabilities = getVulnerabilities();
 
-    // Chart Dimensions (Virtual Units)
+    // Chart Dimensions (Tighter padding)
     const width = 600;
     const height = 300;
-    const padding = 40;
+    const padding = 20; // Reduced from 40
     const graphWidth = width - padding * 2;
     const graphHeight = height - padding * 2;
 
@@ -53,7 +53,6 @@ const ThreatDistribution = () => {
         tl.from(".chart-grid", { scaleX: 0, opacity: 0, duration: 0.6, stagger: 0.05 }, "-=0.4");
 
         // 2. "Elastic Spring" Graph Animation
-        // We animate a proxy value and update the DOM directly for performance
         const animState = { val: 0 };
 
         tl.to(animState, {
@@ -105,12 +104,12 @@ const ThreatDistribution = () => {
     const initialPath = buildPath(chartData, 0);
 
     return (
-        <div ref={container} className="flex h-full w-full flex-col gap-2 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden relative group">
+        <div ref={container} className="flex h-full w-full flex-col gap-1 rounded-2xl border border-border/50 bg-white/40 p-2 shadow-sm backdrop-blur-md overflow-hidden relative group">
 
             {/* Header */}
-            <div className="chart-header flex flex-col gap-1 shrink-0 z-10">
+            <div className="chart-header flex flex-col gap-0.5 shrink-0 z-10">
                 <div className="flex items-center justify-between">
-                    <h2 className="font-space-mono font-bold text-xl uppercase tracking-tighter text-accent">
+                    <h2 className="font-space-mono font-bold text-lg uppercase tracking-tighter text-accent">
                         Risk Distribution
                     </h2>
                     <div className="flex items-center gap-2">
@@ -118,13 +117,14 @@ const ThreatDistribution = () => {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
                         </span>
-                        <div className="rounded-full bg-accent/10 px-3 py-1 text-[10px] text-accent">
+                        <div className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent">
                             LIVE FEED
                         </div>
                     </div>
                 </div>
-                <p className="text-sm font-medium text-gray-500">
-                    Real-time risk metrics across endpoints.
+                {/* Simplified Subtitle for Density */}
+                <p className="text-[10px] font-medium text-gray-400">
+                    Real-time metrics.
                 </p>
             </div>
 
@@ -231,7 +231,7 @@ const ThreatDistribution = () => {
                         <text
                             key={i}
                             x={getX(i)}
-                            y={height - padding + 20}
+                            y={height - padding + 15}
                             textAnchor="middle"
                             className="chart-label text-[10px] fill-gray-400 font-bold uppercase tracking-wider"
                         >

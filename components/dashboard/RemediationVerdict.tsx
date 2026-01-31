@@ -61,13 +61,13 @@ const RemediationVerdict = () => {
     }, { scope: container });
 
     return (
-        <div ref={container} className="flex h-full w-full flex-col justify-center rounded-2xl border border-border/50 bg-white/40 p-8 shadow-sm backdrop-blur-md relative overflow-hidden group">
+        <div ref={container} className="flex h-full w-full flex-col justify-center rounded-2xl border border-border/50 bg-white/40 p-4 shadow-sm backdrop-blur-md relative overflow-hidden group">
 
             {/* Ambient Background Glow - Subtle & Calm */}
-            <div className="blob-bg absolute -top-20 -left-20 h-40 w-40 rounded-full bg-blue-100/30 blur-3xl pointer-events-none group-hover:bg-blue-100/50 transition-colors duration-1000"></div>
+            <div className="blob-bg absolute -top-10 -left-10 h-32 w-32 rounded-full bg-blue-100/30 blur-3xl pointer-events-none group-hover:bg-blue-100/50 transition-colors duration-1000"></div>
 
             {/* Label - Minimal Context */}
-            <div className="verdict-label absolute top-6 left-8">
+            <div className="verdict-label absolute top-3 left-4">
                 <span className="font-space-mono text-[10px] uppercase tracking-widest text-gray-400 font-bold">
                     Executive Verdict
                 </span>
@@ -75,7 +75,7 @@ const RemediationVerdict = () => {
 
             {/* The Verdict Sentence */}
             <div className="verdict-content relative z-10 max-w-lg">
-                <p className="font-space-mono text-xl md:text-2xl leading-relaxed text-secondary font-medium">
+                <p className="font-space-mono text-base md:text-lg leading-relaxed text-secondary font-medium">
                     <span><span className="text-secondary font-bold">{stats.count || 0} vulnerabilities</span> account for{" "}</span>
                     <span><span className="text-secondary font-bold">{stats.riskPercent}%</span> of breach risk.</span>
                     <br className="mb-2 block" />
@@ -85,7 +85,7 @@ const RemediationVerdict = () => {
             </div>
 
             {/* Semantic Line/Accent - "Finality" */}
-            <div className="verdict-line absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-transparent via-accent/20 to-transparent opacity-50"></div>
+            <div className="verdict-line absolute bottom-0 left-0 h-1 w-full bg-linear-to-r from-transparent via-accent/20 to-transparent opacity-50"></div>
         </div>
     );
 };
