@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { getVulnerabilities } from "@/data/vulnerabilities";
 
 // Mock data types
 interface ImpactMetric {
@@ -8,24 +9,32 @@ interface ImpactMetric {
     value: number; // 0-100
 }
 
-const DATA: ImpactMetric[] = [
-    { label: "FINANCIAL", value: 85 },
-    { label: "REPUTATION", value: 92 },
-    { label: "OPERATIONAL", value: 65 },
-    { label: "LEGAL", value: 45 },
-    { label: "COMPLIANCE", value: 78 },
-];
-
 const ImpactRadarGraph = () => {
+    // Get top vulnerability for impact analysis
+    const vulnerabilities = getVulnerabilities();
+    const topVuln = vulnerabilities[0];
+    const impact = topVuln?.impact_analysis;
+
+    const DATA: ImpactMetric[] = [
+        { label: "FINANCIAL", value: impact?.financial ?? 50 },
+        { label: "REPUTATION", value: impact?.reputation ?? 50 },
+        { label: "OPERATIONAL", value: impact?.operational ?? 50 },
+        { label: "LEGAL", value: impact?.legal ?? 50 },
+        { label: "COMPLIANCE", value: impact?.compliance ?? 50 },
+    ];
+
     const [animatedValues, setAnimatedValues] = useState<number[]>(DATA.map(() => 0));
 
-    // Animation effect on mount
+    // Animation effect on mount or data change
     useEffect(() => {
+        // Reset to 0 then animate to new values
+        setAnimatedValues(DATA.map(() => 0));
+
         const timer = setTimeout(() => {
             setAnimatedValues(DATA.map((d) => d.value));
         }, 100);
         return () => clearTimeout(timer);
-    }, []);
+    }, [topVuln]); // Re-run if topVuln changes
 
     // Graph configuration
     const size = 300;

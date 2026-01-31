@@ -1,10 +1,12 @@
 "use client";
 
 import React from "react";
-import { MOCK_VULNERABILITIES } from "@/data/mockVulnerabilities";
+import { getVulnerabilities } from "@/data/vulnerabilities";
 import VulnerabilityCard from "./VulnerabilityCard";
 
 const ActionQueue = () => {
+    const vulnerabilities = getVulnerabilities();
+
     return (
         <div className="flex h-full w-full min-h-0 flex-col gap-4 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden">
             {/* Header Section */}
@@ -25,8 +27,8 @@ const ActionQueue = () => {
             {/* List Section */}
             <div className="flex-1 overflow-y-auto pr-2">
                 <div className="flex flex-col gap-3 pb-6">
-                    {MOCK_VULNERABILITIES.map((vuln, index) => (
-                        <VulnerabilityCard key={vuln.id} vulnerability={vuln} index={index} />
+                    {vulnerabilities.map((vuln, index) => (
+                        <VulnerabilityCard key={vuln.vulnerability_id} vulnerability={vuln} index={index} />
                     ))}
                 </div>
             </div>
