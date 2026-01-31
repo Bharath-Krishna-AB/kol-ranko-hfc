@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useRef } from "react";
 import { getVulnerabilities } from "@/data/vulnerabilities";
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 // Mock data types
 interface ImpactMetric {
@@ -10,6 +12,7 @@ interface ImpactMetric {
 }
 
 const ImpactRadarGraph = () => {
+    const container = useRef(null);
     // Get top vulnerability for impact analysis
     const vulnerabilities = getVulnerabilities();
     const topVuln = vulnerabilities[0];
@@ -23,18 +26,56 @@ const ImpactRadarGraph = () => {
         { label: "COMPLIANCE", value: impact?.compliance ?? 50 },
     ];
 
-    const [animatedValues, setAnimatedValues] = useState<number[]>(DATA.map(() => 0));
+    useGSAP(() => {
+        const tl = gsap.timeline({ delay: 0.6 });
 
-    // Animation effect on mount or data change
-    useEffect(() => {
-        // Reset to 0 then animate to new values
-        setAnimatedValues(DATA.map(() => 0));
+        // 1. Fade/Scale in the grid background
+        tl.from(".grid-poly", {
+            scale: 0,
+            opacity: 0,
+            transformOrigin: "center center",
+            stagger: 0.1,
+            duration: 0.8,
+            ease: "back.out(1.7)"
+        }, 0);
 
-        const timer = setTimeout(() => {
-            setAnimatedValues(DATA.map((d) => d.value));
-        }, 100);
-        return () => clearTimeout(timer);
-    }, [topVuln]); // Re-run if topVuln changes
+        // 2. Draw axis lines
+        tl.from(".axis-line", {
+            scale: 0,
+            opacity: 0,
+            transformOrigin: "center center",
+            duration: 0.6,
+            ease: "power2.out"
+        }, 0.4);
+
+        // 3. Scale up the data polygon
+        tl.from(".data-poly", {
+            scale: 0,
+            opacity: 0,
+            transformOrigin: "center center",
+            duration: 1,
+            ease: "elastic.out(1, 0.7)"
+        }, 0.6);
+
+        // 4. Pop in data points
+        tl.from(".data-point", {
+            scale: 0,
+            opacity: 0,
+            transformOrigin: "center center",
+            stagger: 0.05,
+            duration: 0.5,
+            ease: "back.out(2)"
+        }, 0.8);
+
+        // 5. Fade in labels
+        tl.from(".chart-label", {
+            opacity: 0,
+            y: 10,
+            stagger: 0.05,
+            duration: 0.5
+        }, 0.8);
+
+    }, { scope: container });
 
     // Graph configuration
     const size = 300;
@@ -62,11 +103,11 @@ const ImpactRadarGraph = () => {
     });
 
     // Generate data polygon
-    const dataPoints = animatedValues.map((val, i) => getPoint(val, i, DATA.length));
+    const dataPoints = DATA.map((d, i) => getPoint(d.value, i, DATA.length));
     const dataPolygon = dataPoints.map((p) => `${p.x},${p.y}`).join(" ");
 
     return (
-        <div className="flex h-full w-full flex-col gap-6 rounded-2xl border border-border/50 bg-white/40 p-6 shadow-sm backdrop-blur-md overflow-hidden relative">
+        <div ref={container} className="flex h-full w-full flex-col gap-6 rounded-2xl border border-border/50 bg-white/40 p-6 shadow-sm backdrop-blur-md overflow-hidden relative">
             {/* Header */}
             <div className="flex flex-col gap-2 shrink-0 z-10">
                 <div className="flex items-center justify-between">
@@ -90,7 +131,7 @@ const ImpactRadarGraph = () => {
                             fill="transparent"
                             stroke="rgba(0,0,0,0.05)"
                             strokeWidth="1"
-                            className="transition-all duration-500"
+                            className="grid-poly"
                         />
                     ))}
 
@@ -106,6 +147,7 @@ const ImpactRadarGraph = () => {
                                 y2={point.y}
                                 stroke="rgba(0,0,0,0.05)"
                                 strokeWidth="1"
+                                className="axis-line"
                             />
                         );
                     })}
@@ -116,7 +158,7 @@ const ImpactRadarGraph = () => {
                         fill="rgba(112, 62, 255, 0.2)" // Accent color with opacity
                         stroke="#703EFF" // Accent color
                         strokeWidth="2"
-                        className="transition-all duration-1000 ease-out drop-shadow-[0_0_10px_rgba(112,62,255,0.3)]"
+                        className="data-poly drop-shadow-[0_0_10px_rgba(112,62,255,0.3)]"
                         style={{
                             vectorEffect: "non-scaling-stroke",
                         }}
@@ -132,7 +174,7 @@ const ImpactRadarGraph = () => {
                             fill="#fff"
                             stroke="#703EFF"
                             strokeWidth="2"
-                            className="transition-all duration-1000 ease-out"
+                            className="data-point"
                         />
                     ))}
 
@@ -141,7 +183,6 @@ const ImpactRadarGraph = () => {
                         const point = getPoint(120, i, DATA.length); // Push labels out slightly more
                         // Calculate standard angle to determine text anchor
                         const angle = (Math.PI * 2 * i) / DATA.length - Math.PI / 2;
-                        const degrees = (angle * 180) / Math.PI;
 
                         // Dynamic text anchor based on position
                         let textAnchor: "middle" | "start" | "end" = "middle";
@@ -162,7 +203,7 @@ const ImpactRadarGraph = () => {
                                 y={point.y}
                                 textAnchor={textAnchor}
                                 dominantBaseline={dominantBaseline}
-                                className="fill-gray-500 font-space-mono text-[10px] font-bold tracking-tight uppercase"
+                                className="chart-label fill-gray-500 font-space-mono text-[10px] font-bold tracking-tight uppercase"
                             >
                                 {d.label}
                             </text>

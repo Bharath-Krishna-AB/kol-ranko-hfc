@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { getVulnerabilities } from "@/data/vulnerabilities";
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 // --- Terminal Component ---
 
@@ -18,23 +20,23 @@ const TerminalLog = ({ vulnerabilities }: { vulnerabilities: any[] }) => {
 
             // Random context for logs
             const vuln = vulnerabilities[Math.floor(Math.random() * vulnerabilities.length)] || { package: "unknown", vuln_id: "CVE-2024-XXXX" };
-            const pkg = vuln.package || "lib-core";
-            const id = vuln.vuln_id || "GHSA-xxxx-yyyy";
+            const pkg = vuln.package || "next-auth";
+            const id = vuln.vuln_id || "GHSA-7rjr-3q5j-2c77";
 
-            // Simulation of the actual backend pipeline stages
+            // Simulation of the ACTUAL Python CLI architecture (kolranko.py)
             const stages = [
-                { stage: "ORCHESTRATOR", msg: `[Pipeline] Starting multi-stage analysis for input stream...` },
-                { stage: "PARSER", msg: `[Parser] Tokenizing input payload (${Math.floor(Math.random() * 500)}ms)` },
-                { stage: "VALIDATOR", msg: `[Validator] Checking dependencies for ${pkg}...` },
-                { stage: "VALIDATOR", msg: `[Validator] Regex match confirmed for ${id}` },
-                { stage: "ENRICHER", msg: `[Enricher] Fetching metadata from OSV database for ${pkg}` },
-                { stage: "ENRICHER", msg: `[Enricher] Retrieved CVSS vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N` },
-                { stage: "ANALYZER", msg: `[Analyzer] Function: analyzeVulnerability(${id})` },
-                { stage: "ANALYZER", msg: `[Analyzer] Context: Enterprise System Prompt (4k tokens)` },
-                { stage: "ANALYZER", msg: `[Analyzer] Calculating Risk Score: Likelihood x Impact x Exposure` },
-                { stage: "ANALYZER", msg: `[Analyzer] AI reasoning complete. Confidence: ${(0.85 + Math.random() * 0.14).toFixed(4)}` },
-                { stage: "PRIORITIZER", msg: `[Prioritizer] Sorting ${vulnerabilities.length} vulnerabilities by business impact...` },
-                { stage: "OUTPUT", msg: `[Pipeline] Validating final JSON schema compliance...` }
+                { stage: "CLI_INIT", msg: `[VulnerabilityScanner] Initializing workspace scan...` },
+                { stage: "EXTRACTOR", msg: `[DependencyExtractor] Parsing package.json dependencies...` },
+                { stage: "EXTRACTOR", msg: `[DependencyExtractor] Found ${Math.floor(Math.random() * 50) + 20} dependencies in node_modules` },
+                { stage: "OSV_CLIENT", msg: `[OSVClient] Querying https://api.osv.dev/v1/querybatch` },
+                { stage: "OSV_CLIENT", msg: `[OSVClient] Response: Found potential match for ${pkg}` },
+                { stage: "DEPENDABOT", msg: `[DependabotClient] Fetching alerts from GitHub API` },
+                { stage: "CONTEXT", msg: `[ContextCollector] Reading context.md from /components/auth` },
+                { stage: "ORCHESTRATOR", msg: `[VulnerabilityAnalyzer] Sending payload to /api/analyze` },
+                { stage: "AI_ENGINE", msg: `[GPT-4o] Analyzing ${id} against enterprise context...` },
+                { stage: "AI_ENGINE", msg: `[GPT-4o] Risk assessment: High confidentiality impact` },
+                { stage: "Orchestrator", msg: `[Pipeline] Saving results to vulnerability_analysis.json` },
+                { stage: "Orchestrator", msg: `[Pipeline] Calculated aggregate risk score: ${(Math.random() * 10).toFixed(1)}/10` }
             ];
 
             // Pick a message based on a cycling step index to simulate linear progress
@@ -48,8 +50,10 @@ const TerminalLog = ({ vulnerabilities }: { vulnerabilities: any[] }) => {
             stepIndex++;
 
             // Vary speed based on "stage" complexity
-            // Analyzer steps take longer, simple steps are fast
-            const delay = currentStage.stage === "ANALYZER" ? Math.random() * 800 + 400 : Math.random() * 300 + 100;
+            // Network requests take longer
+            const delay = currentStage.stage.includes("CLIENT") || currentStage.stage.includes("AI") ?
+                Math.random() * 1000 + 500 :
+                Math.random() * 300 + 100;
             setTimeout(generateBackendLog, delay);
         };
 
@@ -76,7 +80,7 @@ const TerminalLog = ({ vulnerabilities }: { vulnerabilities: any[] }) => {
             {/* Logs: Explicit text-white for visibility */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-2 z-10 scrollbar-hide">
                 {logs.map((log, i) => (
-                    <div key={i} className="text-white/90 border-l-2 border-transparent hover:border-accent pl-2 transition-all break-words font-medium leading-relaxed">
+                    <div key={i} className="text-white/90 border-l-2 border-transparent hover:border-accent pl-2 transition-all break-all font-medium leading-relaxed">
                         <span className="text-accent mr-3">{">"}</span>
                         {log}
                     </div>
@@ -89,13 +93,42 @@ const TerminalLog = ({ vulnerabilities }: { vulnerabilities: any[] }) => {
 
 
 const ThreatDistribution = () => {
+    const container = useRef(null);
     const rawVulnerabilities = getVulnerabilities();
 
+    useGSAP(() => {
+        const tl = gsap.timeline({ delay: 0.4 });
+
+        // 1. Header slide in
+        tl.from(".terminal-header", { y: -10, opacity: 0, duration: 0.5 });
+
+        // 2. Power-on effect for screen (scale Y from center)
+        tl.from(".terminal-screen", {
+            scaleY: 0,
+            opacity: 0,
+            duration: 0.4,
+            ease: "power2.inOut",
+            transformOrigin: "center center"
+        });
+
+        // 3. Horizontal expand
+        tl.from(".terminal-screen", {
+            scaleX: 0.95,
+            duration: 0.2,
+            ease: "power2.out"
+        }, "+=0");
+
+        // 4. Subtle flicker
+        tl.to(".terminal-screen", { opacity: 0.8, duration: 0.05, yoyo: true, repeat: 3 });
+        tl.to(".terminal-screen", { opacity: 1, duration: 0.1 });
+
+    }, { scope: container });
+
     return (
-        <div className="flex h-full w-full flex-col gap-4 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden">
+        <div ref={container} className="flex h-full w-full flex-col gap-4 rounded-2xl border border-border/50 bg-white/40 p-5 shadow-sm backdrop-blur-md overflow-hidden">
 
             {/* Header */}
-            <div className="flex flex-col gap-2 shrink-0 z-10">
+            <div className="terminal-header flex flex-col gap-2 shrink-0 z-10">
                 <div className="flex items-center justify-between">
                     <h2 className="font-space-mono font-bold text-2xl uppercase tracking-tighter text-accent">
                         Sentinel Terminal
@@ -110,7 +143,7 @@ const ThreatDistribution = () => {
             </div>
 
             {/* Inner "Device" Window - Dark Theme (bg-secondary) */}
-            <div className="flex flex-1 items-stretch justify-center overflow-hidden relative rounded-xl bg-secondary border border-border/10 shadow-inner p-2 group">
+            <div className="terminal-screen flex flex-1 items-stretch justify-center overflow-hidden relative rounded-xl bg-secondary border border-border/10 shadow-inner p-2 group">
                 {/* Visual Artifacts / Background for Terminal */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[20px_20px] pointer-events-none opacity-20"></div>
 
